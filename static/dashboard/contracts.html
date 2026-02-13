@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contract Generator</title>
+
+    <style>
+        @font-face {
+            font-family: 'Univers';
+            src: url('/static/Univers 55 Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Univers', 'Inter', sans-serif;
+            background: #f5f5f5;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 40px;
+            background: white;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .top-logo {
+            height: 40px;
+        }
+
+        .back-btn {
+            color: #000000;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .stepper {
+            width: 80%;
+            margin: 20px auto;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .step {
+            text-align: center;
+            flex: 1;
+            opacity: 0.4;
+            transition: opacity 0.3s;
+        }
+
+        .step.active {
+            font-weight: bold;
+            opacity: 1;
+        }
+
+        .step-number {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #000000;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 5px;
+            font-family: 'Univers', 'Inter', sans-serif;
+        }
+
+        .step.active .step-number {
+            background: #000000;
+        }
+
+        .content-area {
+            display: block;
+            padding: 0;
+        }
+
+        .form-card {
+            background: white;
+            padding: 40px;
+            width: 100%;
+            overflow-y: auto;
+            border-bottom: 2px solid #e5e5e5;
+        }
+
+        #previewContent {
+            background: white;
+            padding: 20px;
+            border-left: 4px solid #000;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 6px;
+            font-family: 'Univers', 'Inter', sans-serif;
+            color: #333333;
+            font-size: 14px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background: white;
+            color: #333333;
+            font-size: 15px;
+            font-family: 'Univers', 'Inter', sans-serif;
+            box-sizing: border-box;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #4a90e2;
+            background: white;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+
+        .checkbox-group label {
+            color: #333333;
+        }
+
+        .add-btn {
+            background: white;
+            border: 1px solid #4a90e2;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+            display: inline-block;
+            font-family: 'Univers', 'Inter', sans-serif;
+            color: #4a90e2;
+            font-weight: 600;
+        }
+
+        .add-btn:hover {
+            background: #4a90e2;
+            color: white;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            border: none;
+            font-family: 'Univers', 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #000000;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #357abd;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333333;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e5e5;
+        }
+
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        .step-content h2 {
+            color: #000000;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .step-content p {
+            color: #666666;
+            margin-bottom: 25px;
+        }
+
+        .template-option {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .template-option:hover {
+            border-color: #000000;
+        }
+
+        .template-option input[type="radio"] {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        .artist-card, .recording-item {
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .remove-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+
+        .remove-btn:hover {
+            background: #d32f2f;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            display: inline-block;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            border-radius: 26px;
+            transition: 0.3s;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: #4a90e2;
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        h2 {
+            font-family: 'Univers', 'Inter', sans-serif;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .form-card p {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .generate-btn {
+            background: #000000;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <a href="/dashboard" class="back-btn">← Back to Dashboard</a>
+        <h2>Contract Generator</h2>
+        <img src="/static/sunday-logo-black.png" alt="Sunday Logo" class="top-logo">
+    </div>
+
+    <!-- STEPPER -->
+    <div class="stepper">
+        <div class="step" data-step="1">
+            <div class="step-number">1</div>
+            Template
+        </div>
+        <div class="step" data-step="2">
+            <div class="step-number">2</div>
+            Project
+        </div>
+        <div class="step" data-step="3">
+            <div class="step-number">3</div>
+            Artists
+        </div>
+        <div class="step" data-step="4">
+            <div class="step-number">4</div>
+            Publishing
+        </div>
+        <div class="step" data-step="5">
+            <div class="step-number">5</div>
+            Recordings
+        </div>
+        <div class="step" data-step="6">
+            <div class="step-number">6</div>
+            Financial
+        </div>
+        <div class="step" data-step="7">
+            <div class="step-number">7</div>
+            Preview
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="content-area">
+
+        <!-- LEFT: FORM -->
+        <div class="form-card">
+
+            <!-- STEP 1: Template Selection -->
+            <div class="step-content active" data-step="1">
+                <h2>📄 Select Contract Template</h2>
+                <p>Choose the type of contract you want to create</p>
+                
+                <div id="template-list">
+                    <p>Loading templates...</p>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="nextStep()">Next →</button>
+                </div>
+            </div>
+
+            <!-- STEP 2: Project Info -->
+            <div class="step-content" data-step="2">
+                <h2>🏷️ Project Information</h2>
+                <p>Basic project details</p>
+
+                <div class="input-group">
+                    <label>Project Number *</label>
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <span style="font-weight: bold; color: #666;">SUN2026-R-</span>
+                        <input type="text" id="project_number" placeholder="e.g., 001" required style="flex: 1;" maxlength="3" pattern="[0-9]{3}">
+                    </div>
+                    <small style="color: #666; font-size: 0.9em;">Enter 3-digit number (e.g., 001, 042, 123)</small>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+                    <button class="btn btn-primary" onclick="nextStep()">Next →</button>
+                </div>
+            </div>
+
+            <!-- STEP 3: Artist Info -->
+            <div class="step-content" data-step="3">
+                <h2>🎤 Artist Information</h2>
+                <p>Add one or more artists</p>
+
+                <div id="artists-container"></div>
+
+                <div class="add-btn" onclick="addArtist()">+ Add Artist</div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+                    <button class="btn btn-primary" onclick="nextStep()">Next →</button>
+                </div>
+            </div>
+
+            <!-- STEP 4: Publishing -->
+            <div class="step-content" data-step="4">
+                <h2>📝 Publishing Rights</h2>
+                <p>Specify publishing information</p>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="publishing_included">
+                    <label for="publishing_included">Include publishing rights in this contract</label>
+                </div>
+
+                <div id="publishing_options" style="display: none; margin-top: 20px;">
+                    <h3>Publishing Royalty Split</h3>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="publishing_same_as_recording" checked>
+                        <label for="publishing_same_as_recording">Same as recording agreement (Writer: recording%, Publisher: remaining%)</label>
+                    </div>
+
+                    <div id="custom_publishing_split" style="display: none; margin-top: 15px;">
+                        <label for="writer_share">Writer Share (%)</label>
+                        <input type="number" id="writer_share" min="0" max="100" value="50" placeholder="Enter writer percentage">
+                        <p style="margin-top: 5px; font-size: 0.9em; color: #666;">
+                            Publisher share will be: <strong><span id="publisher_share_display">50</span>%</strong>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+                    <button class="btn btn-primary" onclick="nextStep()">Next →</button>
+                </div>
+            </div>
+
+            <!-- STEP 5: Recordings -->
+            <div class="step-content" data-step="5">
+                <h2>🎵 Recording Details</h2>
+                <p>List all recordings covered by this contract</p>
+
+                <div id="recordings-container"></div>
+
+                <div class="add-btn" onclick="addRecording()">+ Add Recording</div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+                    <button class="btn btn-primary" onclick="nextStep()">Next →</button>
+                </div>
+            </div>
+
+            <!-- STEP 6: Financial Terms -->
+            <div class="step-content" data-step="6">
+                <h2>💰 Financial Terms</h2>
+                <p>Define royalties and financial arrangements</p>
+
+                <div class="input-group">
+                    <label>Royalty Percentage *</label>
+                    <input type="number" id="royalty_percent" value="50" min="0" max="100" required>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="marketing_recoupment_enabled">
+                    <label for="marketing_recoupment_enabled">Enable marketing cost recoupment</label>
+                </div>
+
+                <div class="input-group" id="marketing_recoupment_group" style="display:none;">
+                    <label>Marketing Recoupment Amount</label>
+                    <input type="number" id="marketing_recoupment_amount" value="5000" min="0">
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="marketing_option_enabled">
+                    <label for="marketing_option_enabled">Include marketing option clause</label>
+                </div>
+
+                <div class="input-group" id="marketing_option_group" style="display:none;">
+                    <label>Marketing Option Amount</label>
+                    <input type="number" id="marketing_option_amount" value="5000" min="0">
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="advance_enabled">
+                    <label for="advance_enabled">Include advance payment</label>
+                </div>
+
+                <div class="input-group" id="advance_group" style="display:none;">
+                    <label>Advance Amount (DKK)</label>
+                    <input type="number" id="advance_amount" value="10000" min="0">
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="milestone_enabled">
+                    <label for="milestone_enabled">Include milestone advance</label>
+                </div>
+
+                <div id="milestone_group" style="display:none;">
+                    <div class="input-group">
+                        <label>Daily Streams Required</label>
+                        <input type="number" id="milestone_daily_streams" value="20000" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>Period (consecutive days)</label>
+                        <input type="number" id="milestone_period_days" value="7" min="1">
+                    </div>
+                    <div class="input-group">
+                        <label>Milestone Advance Amount (DKK)</label>
+                        <input type="number" id="milestone_advance_amount" value="5000" min="0">
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+                    <button class="btn btn-primary" onclick="nextStep()">Next →</button>
+                </div>
+            </div>
+
+            <!-- STEP 7: Preview & Generate -->
+            <div class="step-content" data-step="7">
+                <h2>✅ Review & Generate</h2>
+                <p>Review your contract details and generate</p>
+
+                <div id="review-summary"></div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+                    <button class="btn btn-primary" onclick="generateContract()">🚀 Generate Contract</button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let contractData = {
+            template_name: "",
+            project_number: "",
+            artists: [],
+            publishing_included: false,
+            publishing_same_as_recording: true,
+            writer_share: 50,
+            recordings: [],
+            royalty_percent: 50,
+            marketing_recoupment_enabled: false,
+            marketing_recoupment_amount: 0,
+            marketing_option_enabled: false,
+            marketing_option_amount: 0,
+            advance_enabled: false,
+            advance_amount: 0,
+            milestone_enabled: false,
+            milestone_daily_streams: 0,
+            milestone_period_days: 0,
+            milestone_advance_amount: 0
+        };
+
+        // Initialize
+        window.onload = function() {
+            loadTemplates();
+            addArtist();
+            addRecording();
+            loadStep(1);
+
+            // Toggle marketing fields
+            document.getElementById('marketing_recoupment_enabled').addEventListener('change', function() {
+                document.getElementById('marketing_recoupment_group').style.display = this.checked ? 'block' : 'none';
+            });
+
+            document.getElementById('marketing_option_enabled').addEventListener('change', function() {
+                document.getElementById('marketing_option_group').style.display = this.checked ? 'block' : 'none';
+            });
+
+            // Toggle advance field
+            document.getElementById('advance_enabled').addEventListener('change', function() {
+                document.getElementById('advance_group').style.display = this.checked ? 'block' : 'none';
+            });
+
+            // Toggle milestone field
+            document.getElementById('milestone_enabled').addEventListener('change', function() {
+                document.getElementById('milestone_group').style.display = this.checked ? 'block' : 'none';
+            });
+
+        };
+
+        function updateSummaryOnStepChange() {
+            if (currentStep === 7) {
+                updateSummary();
+            }
+        }
+
+        function addArtistListeners() {
+            // Placeholder for compatibility - no longer needed
+        }
+
+        function addRecordingListeners() {
+            // Placeholder for compatibility - no longer needed
+        }
+
+        async function loadTemplates() {
+            try {
+                const response = await fetch('/api/contracts/templates');
+                const data = await response.json();
+                
+                const container = document.getElementById('template-list');
+                if (data.templates && data.templates.length > 0) {
+                    container.innerHTML = data.templates.map((template, idx) => `
+                        <label class="template-option">
+                            <input type="radio" name="template" value="${template}" ${idx === 0 ? 'checked' : ''}>
+                            <strong>${template}</strong>
+                        </label>
+                    `).join('');
+
+                    contractData.template_name = data.templates[0];
+                    
+                    document.querySelectorAll('input[name="template"]').forEach(radio => {
+                        radio.addEventListener('change', function() {
+                            contractData.template_name = this.value;
+                        });
+                    });
+                } else {
+                    container.innerHTML = '<p style="color: #f44336;">No templates found</p>';
+                }
+            } catch (error) {
+                console.error('Error loading templates:', error);
+                document.getElementById('template-list').innerHTML = '<p style="color: #f44336;">Error loading templates</p>';
+            }
+        }
+
+        function loadStep(step) {
+            currentStep = step;
+            
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.step-content').forEach(s => s.classList.remove('active'));
+            
+            document.querySelector(`.step[data-step="${step}"]`).classList.add('active');
+            document.querySelector(`.step-content[data-step="${step}"]`).classList.add('active');
+
+            if (step === 7) updateSummary();
+        }
+
+        function nextStep() {
+            if (!validateCurrentStep()) return;
+            collectCurrentStepData();
+            if (currentStep < 7) {
+                loadStep(currentStep + 1);
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                loadStep(currentStep - 1);
+            }
+        }
+
+        function validateCurrentStep() {
+            if (currentStep === 1 && !contractData.template_name) {
+                alert('Please select a template');
+                return false;
+            }
+            if (currentStep === 2) {
+                const projectNum = document.getElementById('project_number').value.trim();
+                if (!projectNum) {
+                    alert('Please enter project number');
+                    return false;
+                }
+                if (!/^[0-9]{3}$/.test(projectNum)) {
+                    alert('Project number must be exactly 3 digits (e.g., 001, 042, 123)');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function collectCurrentStepData() {
+            if (currentStep === 2) {
+                contractData.project_number = document.getElementById('project_number').value.trim();
+            }
+            if (currentStep === 3) {
+                contractData.artists = [];
+                document.querySelectorAll('.artist-card').forEach(card => {
+                    contractData.artists.push({
+                        stage_name: card.querySelector('[name="stage_name"]').value.trim(),
+                        full_name: card.querySelector('[name="full_name"]').value.trim(),
+                        address: card.querySelector('[name="address"]').value.trim(),
+                        postcode: card.querySelector('[name="postcode"]').value.trim(),
+                        city: card.querySelector('[name="city"]').value.trim(),
+                        country: card.querySelector('[name="country"]').value.trim(),
+                        id_number: card.querySelector('[name="id_number"]').value.trim(),
+                        email: card.querySelector('[name="email"]').value.trim(),
+                        ipi: card.querySelector('[name="ipi"]').value.trim() || null,
+                        include_in_publishing: card.querySelector('[name="include_in_publishing"]').checked
+                    });
+                });
+            }
+            if (currentStep === 4) {
+                contractData.publishing_included = document.getElementById('publishing_included').checked;
+                contractData.publishing_same_as_recording = document.getElementById('publishing_same_as_recording').checked;
+                if (!contractData.publishing_same_as_recording) {
+                    contractData.writer_share = parseInt(document.getElementById('writer_share').value) || 50;
+                }
+            }
+            if (currentStep === 5) {
+                contractData.recordings = [];
+                document.querySelectorAll('.recording-item input').forEach(input => {
+                    const val = input.value.trim();
+                    if (val) contractData.recordings.push(val);
+                });
+            }
+            if (currentStep === 6) {
+                contractData.royalty_percent = parseFloat(document.getElementById('royalty_percent').value);
+                contractData.marketing_recoupment_enabled = document.getElementById('marketing_recoupment_enabled').checked;
+                contractData.marketing_recoupment_amount = contractData.marketing_recoupment_enabled ? 
+                    parseFloat(document.getElementById('marketing_recoupment_amount').value) : 0;
+                contractData.marketing_option_enabled = document.getElementById('marketing_option_enabled').checked;
+                contractData.marketing_option_amount = contractData.marketing_option_enabled ? 
+                    parseFloat(document.getElementById('marketing_option_amount').value) : 0;
+                contractData.advance_enabled = document.getElementById('advance_enabled').checked;
+                contractData.advance_amount = contractData.advance_enabled ? 
+                    parseFloat(document.getElementById('advance_amount').value) : 0;
+                contractData.milestone_enabled = document.getElementById('milestone_enabled').checked;
+                contractData.milestone_daily_streams = contractData.milestone_enabled ? 
+                    parseFloat(document.getElementById('milestone_daily_streams').value) : 0;
+                contractData.milestone_period_days = contractData.milestone_enabled ? 
+                    parseFloat(document.getElementById('milestone_period_days').value) : 0;
+                contractData.milestone_advance_amount = contractData.milestone_enabled ? 
+                    parseFloat(document.getElementById('milestone_advance_amount').value) : 0;
+            }
+        }
+
+        function addArtist() {
+            const container = document.getElementById('artists-container');
+            const index = container.children.length;
+            
+            const div = document.createElement('div');
+            div.className = 'artist-card';
+            div.innerHTML = `
+                ${index > 0 ? '<button class="remove-btn" onclick="this.parentElement.remove();">Remove</button>' : ''}
+                <h4>Artist ${index + 1}</h4>
+                <div class="input-group">
+                    <label>Stage Name *</label>
+                    <input type="text" name="stage_name" required>
+                </div>
+                <div class="input-group">
+                    <label>Full Legal Name *</label>
+                    <input type="text" name="full_name" required>
+                </div>
+                <div class="input-group">
+                    <label>Address *</label>
+                    <input type="text" name="address" required>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="input-group">
+                        <label>Postcode *</label>
+                        <input type="text" name="postcode" required>
+                    </div>
+                    <div class="input-group">
+                        <label>City *</label>
+                        <input type="text" name="city" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Country *</label>
+                    <input type="text" name="country" required>
+                </div>
+                <div class="input-group">
+                    <label>ID Number (CPR/Passport) *</label>
+                    <input type="text" name="id_number" required>
+                </div>
+                <div class="input-group">
+                    <label>Email *</label>
+                    <input type="email" name="email" required>
+                </div>
+                <div class="input-group">
+                    <label>IPI Number (if applicable)</label>
+                    <input type="text" name="ipi">
+                </div>
+                <!-- Publishing Toggle -->
+                <div class="input-group" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e5e5;">
+                    <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                        <span style="font-weight: 600; color: #333; flex: 1;">Include Artist in Publishing (if applicable)</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" name="include_in_publishing" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </label>
+                    <small style="color: #666; font-size: 12px; margin-top: 5px; display: block;">
+                        This artist will appear in the publishing agreement (if you enable publishing in Step 4)
+                    </small>
+                </div>
+            `;
+            container.appendChild(div);
+            addArtistListeners();
+        }
+
+        function addRecording() {
+            const container = document.getElementById('recordings-container');
+            const index = container.children.length;
+            
+            const div = document.createElement('div');
+            div.className = 'recording-item';
+            div.innerHTML = `
+                ${index > 0 ? '<button class="remove-btn" onclick="this.parentElement.remove();">Remove</button>' : ''}
+                <div class="input-group">
+                    <label>Recording Title *</label>
+                    <input type="text" placeholder="Enter recording title" required>
+                </div>
+            `;
+            container.appendChild(div);
+            addRecordingListeners();
+        }
+
+        function updateSummary() {
+            collectCurrentStepData();
+
+            const reviewSummary = document.getElementById('review-summary');
+            
+            const templateHighlight = contractData.template_name 
+                ? `<span style="background: #fff9c4; padding: 2px 4px;">${contractData.template_name}</span>`
+                : 'Not selected';
+            
+            const projectHighlight = contractData.project_number 
+                ? `<span style="background: #fff9c4; padding: 2px 4px;">SUN2026-R-${contractData.project_number}</span>`
+                : 'Not set';
+
+            // Build artist summary with all details
+            let artistsSummary = '';
+            if (contractData.artists.length > 0) {
+                artistsSummary = contractData.artists.map((artist, idx) => `
+                    <div style="margin-bottom: 15px; border-left: 3px solid #ccc; padding-left: 10px;">
+                        <p style="margin: 5px 0;"><strong>Artist ${idx + 1}:</strong></p>
+                        <p style="margin: 5px 0;"><strong>Stage Name:</strong> <span style="background: #fff9c4; padding: 2px 4px;">${artist.stage_name || 'N/A'}</span></p>
+                        <p style="margin: 5px 0;"><strong>Full Name:</strong> <span style="background: #fff9c4; padding: 2px 4px;">${artist.full_name || 'N/A'}</span></p>
+                        <p style="margin: 5px 0;"><strong>Address:</strong> <span style="background: #fff9c4; padding: 2px 4px;">${artist.address || 'N/A'}</span></p>
+                        <p style="margin: 5px 0;"><strong>Postcode:</strong> <span style="background: #fff9c4; padding: 2px 4px;">${artist.postcode || 'N/A'}</span></p>
+                        <p style="margin: 5px 0;"><strong>City:</strong> <span style="background: #fff9c4; padding: 2px 4px;">${artist.city || 'N/A'}</span></p>
+                        <p style="margin: 5px 0;"><strong>Country:</strong> <span style="background: #fff9c4; padding: 2px 4px;">${artist.country || 'N/A'}</span></p>
+                        <p style="margin: 5px 0;"><strong>ID Number:</strong> <span style="background: #fff9c4; padding: 2px 4px;">${artist.id_number || 'N/A'}</span></p>
+                        <p style="margin: 5px 0;"><strong>Email:</strong> <span style="background: #fff9c4; padding: 2px 4px;">${artist.email || 'N/A'}</span></p>
+                        ${artist.ipi ? `<p style="margin: 5px 0;"><strong>IPI:</strong> <span style="background: #fff9c4; padding: 2px 4px;">${artist.ipi}</span></p>` : ''}
+                        <p style="margin: 5px 0;"><strong>Publishing:</strong> <span style="background: ${artist.include_in_publishing ? '#c8e6c9' : '#ffcdd2'}; padding: 2px 4px;">${artist.include_in_publishing ? 'Applicable' : 'Not Applicable'}</span></p>
+                    </div>
+                `).join('');
+            } else {
+                artistsSummary = '<p>No artists added</p>';
+            }
+
+            // Build recordings summary
+            const recordingsSummary = contractData.recordings.length > 0 
+                ? contractData.recordings.map(r => `<span style="background: #fff9c4; padding: 2px 4px; display: inline-block; margin-right: 5px; margin-bottom: 5px;">${r}</span>`).join('')
+                : 'No recordings added';
+
+            // Publishing summary
+            let publishingHtml = '<p><strong>Publishing Included:</strong> No</p>';
+            if (contractData.publishing_included) {
+                publishingHtml = `<p><strong>Publishing Included:</strong> <span style="background: #fff9c4; padding: 2px 4px;">Yes</span></p>`;
+                if (!contractData.publishing_same_as_recording) {
+                    publishingHtml += `<p><strong>Writer Share:</strong> <span style="background: #fff9c4; padding: 2px 4px;">${contractData.writer_share}%</span></p>`;
+                }
+            }
+
+            // Financial summary
+            let financialHtml = '';
+            financialHtml += `<p><strong>Royalty Rate:</strong> <span style="background: #fff9c4; padding: 2px 4px;">${contractData.royalty_percent}%</span></p>`;
+            
+            if (contractData.marketing_recoupment_enabled) {
+                financialHtml += `<p><strong>Marketing Recoupment:</strong> <span style="background: #fff9c4; padding: 2px 4px;">DKK ${contractData.marketing_recoupment_amount}</span></p>`;
+            }
+            
+            if (contractData.marketing_option_enabled) {
+                financialHtml += `<p><strong>Marketing Option:</strong> <span style="background: #fff9c4; padding: 2px 4px;">DKK ${contractData.marketing_option_amount}</span></p>`;
+            }
+            
+            if (contractData.advance_enabled) {
+                financialHtml += `<p><strong>Advance:</strong> <span style="background: #fff9c4; padding: 2px 4px;">DKK ${contractData.advance_amount}</span></p>`;
+            }
+
+            if (contractData.milestone_enabled) {
+                financialHtml += `
+                    <p><strong>Milestone Daily Streams:</strong> <span style="background: #fff9c4; padding: 2px 4px;">${contractData.milestone_daily_streams}</span></p>
+                    <p><strong>Milestone Period:</strong> <span style="background: #fff9c4; padding: 2px 4px;">${contractData.milestone_period_days} days</span></p>
+                    <p><strong>Milestone Advance:</strong> <span style="background: #fff9c4; padding: 2px 4px;">DKK ${contractData.milestone_advance_amount}</span></p>
+                `;
+            }
+
+            reviewSummary.innerHTML = `
+                <div style="background: #f0f0f0; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <h3 style="margin-top: 0; border-bottom: 2px solid #000; padding-bottom: 10px;">Template & Project</h3>
+                    <p><strong>Template:</strong> ${templateHighlight}</p>
+                    <p><strong>Project Number:</strong> ${projectHighlight}</p>
+
+                    <h3 style="border-bottom: 2px solid #000; padding-bottom: 10px; margin-top: 20px;">Artists & Recordings</h3>
+                    <div style="margin-bottom: 15px;">
+                        <p><strong>Number of Recordings:</strong> ${contractData.recordings.length}</p>
+                        <p><strong>Recordings:</strong></p>
+                        <div>${recordingsSummary}</div>
+                    </div>
+                    <h4>Artist Details:</h4>
+                    ${artistsSummary}
+
+                    <h3 style="border-bottom: 2px solid #000; padding-bottom: 10px; margin-top: 20px;">Publishing</h3>
+                    ${publishingHtml}
+
+                    <h3 style="border-bottom: 2px solid #000; padding-bottom: 10px; margin-top: 20px;">Financial Terms</h3>
+                    ${financialHtml}
+                </div>
+                <p style="color: #666; font-size: 0.9em; font-style: italic;">Review your information above and click Generate to create your contract.</p>
+            `;
+        }
+
+        async function generateContract() {
+            collectCurrentStepData();
+
+            if (!contractData.template_name || !contractData.project_number || 
+                contractData.artists.length === 0 || contractData.recordings.length === 0) {
+                alert('Please complete all required fields');
+                return;
+            }
+
+            try {
+                console.log('Sending contract data:', contractData);
+                
+                const response = await fetch('/api/contracts/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(contractData)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Failed to generate contract');
+                }
+
+                const blob = await response.blob();
+                downloadFile(blob, 'contract_generated.docx');
+            } catch (error) {
+                console.error('Error generating contract:', error);
+                alert('Error generating contract: ' + error.message);
+            }
+        }
+
+        function downloadFile(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Publishing options toggle
+        document.getElementById('publishing_included').addEventListener('change', function() {
+            const publishingOptions = document.getElementById('publishing_options');
+            publishingOptions.style.display = this.checked ? 'block' : 'none';
+        });
+
+        // Publishing same as recording toggle
+        document.getElementById('publishing_same_as_recording').addEventListener('change', function() {
+            const customSplit = document.getElementById('custom_publishing_split');
+            customSplit.style.display = this.checked ? 'none' : 'block';
+        });
+
+        // Update publisher share display when writer share changes
+        document.getElementById('writer_share').addEventListener('input', function() {
+            const writerShare = parseInt(this.value) || 0;
+            const publisherShare = 100 - writerShare;
+            document.getElementById('publisher_share_display').textContent = publisherShare;
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,1978 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A&R Portal – Discover</title>
+  
+  <!-- Chart.js for analytics charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+  
+  <style>
+    @font-face {
+      font-family: 'Univers 55';
+      src: url('/static/Univers%2055%20Regular.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    @font-face {
+      font-family: 'Univers 93';
+      src: url('/static/Univers%2093%20Extra%20Black%20Extended%20Regular.otf') format('opentype');
+      font-weight: bold;
+      font-style: normal;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Univers 55', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      display: flex;
+      min-height: 100vh;
+      background: #f5f5f5;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: url('/static/background.jpg') center center / cover no-repeat;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      left: 0;
+      top: 0;
+    }
+
+    .sidebar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 0;
+    }
+
+    .sidebar > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      font-size: 18px;
+      font-weight: 600;
+      font-family: 'Univers 93', sans-serif;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .sidebar-header img {
+      width: 200px;
+      height: 20px;
+      filter: brightness(0) invert(1);
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 20px 0;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .nav-item:hover {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .nav-item.active {
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border-left: 3px solid #3498db;
+    }
+
+    .nav-item svg {
+      width: 20px;
+      height: 20px;
+      margin-right: 12px;
+    }
+
+    .sidebar-footer {
+      padding: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #3498db;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+    .user-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .user-name {
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Univers 93', sans-serif;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-email {
+      font-size: 11px;
+      color: rgba(255,255,255,0.6);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .logout-btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.3s;
+      margin-top: 12px;
+      width: 100%;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255,255,255,0.15);
+      border-color: rgba(255,255,255,0.3);
+    }
+    
+    /* Analytics Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 1200px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      animation: modalSlideIn 0.3s ease-out;
+    }
+    
+    @keyframes modalSlideIn {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    .modal-header {
+      padding: 24px 32px;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .modal-title {
+      font-family: 'Univers 93', sans-serif;
+      font-size: 24px;
+      color: #2c3e50;
+    }
+    
+    .modal-subtitle {
+      font-size: 14px;
+      color: #7f8c8d;
+      margin-top: 4px;
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 32px;
+      color: #7f8c8d;
+      cursor: pointer;
+      padding: 0;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.3s;
+    }
+    
+    .modal-close:hover {
+      background: #f5f5f5;
+      color: #2c3e50;
+    }
+    
+    .modal-body {
+      padding: 32px;
+    }
+    
+    .analytics-section {
+      margin-bottom: 32px;
+    }
+    
+    .analytics-section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .chart-container {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .metric-card {
+      background: #f8f9fa;
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .metric-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 4px;
+    }
+    
+    .metric-label {
+      font-size: 12px;
+      color: #7f8c8d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    /* Main Content */
+    .main-content {
+      margin-left: 250px;
+      flex: 1;
+      padding: 30px;
+    }
+
+    .page-header {
+      margin-bottom: 30px;
+    }
+
+    .page-title {
+      font-family: 'Univers 93', sans-serif;
+      font-size: 32px;
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+
+    .page-description {
+      color: #7f8c8d;
+      font-size: 16px;
+    }
+
+    /* Filters */
+    .filters-container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .filters-row {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+
+    .filter-group {
+      flex: 1;
+      min-width: 200px;
+    }
+    
+    /* View Tabs */
+    .view-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .view-tab {
+      padding: 12px 24px;
+      background: white;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Univers 65', sans-serif;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    
+    .view-tab:hover {
+      border-color: #3498db;
+      background: #f8f9fa;
+    }
+    
+    .view-tab.active {
+      background: #3498db;
+      color: white;
+      border-color: #3498db;
+    }
+
+    /* Filters Section */
+    .filters-container {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .filters-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+    }
+
+    .search-box {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: #f8f9fa;
+      border: 1px solid #e0e0e0;
+      border-radius: 24px;
+      transition: all 0.2s;
+    }
+
+    .search-box:focus-within {
+      border-color: #3498db;
+      background: white;
+    }
+
+    .search-box svg {
+      width: 18px;
+      height: 18px;
+      stroke: #999;
+    }
+
+    .search-box input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      font-family: 'Univers 55', sans-serif;
+      outline: none;
+    }
+
+    .search-box input::placeholder {
+      color: #aaa;
+    }
+
+    .filter-controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      position: relative;
+    }
+
+    .market-dropdown,
+    .filters-dropdown {
+      padding: 10px 16px;
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-family: 'Univers 55', sans-serif;
+      transition: all 0.2s;
+      color: #2c3e50;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .market-dropdown:hover,
+    .filters-dropdown:hover {
+      border-color: #3498db;
+      background: #f8f9fa;
+    }
+
+    .filters-content {
+      display: none;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .filters-content.active {
+      display: block;
+    }
+
+    .filter-label {
+      font-family: 'Univers 65', sans-serif;
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 8px;
+      display: block;
+      font-weight: 600;
+    }
+
+    .filters-row {
+      margin-bottom: 20px;
+    }
+
+    .filters-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 8px 16px;
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-family: 'Univers 55', sans-serif;
+      transition: all 0.2s;
+      color: #2c3e50;
+    }
+
+    .filter-btn:hover {
+      border-color: #3498db;
+      background: #f8f9fa;
+    }
+
+    .filter-btn.active {
+      background: #3498db;
+      color: white;
+      border-color: #3498db;
+    }
+
+    .filter-input {
+      padding: 8px 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: 'Univers 55', sans-serif;
+      width: 200px;
+    }
+
+    .filter-input:focus {
+      outline: none;
+      border-color: #3498db;
+    }
+
+    .filter-select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: 'Univers 55', sans-serif;
+      font-size: 14px;
+    }
+
+    /* Results Container */
+    .results-container {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .results-count {
+      font-family: 'Univers 93', sans-serif;
+      color: #2c3e50;
+    }
+
+    .view-toggle {
+      display: flex;
+      gap: 10px;
+    }
+
+    .view-btn {
+      padding: 8px 16px;
+      border: 1px solid #ddd;
+      background: white;
+      cursor: pointer;
+      border-radius: 4px;
+      font-family: 'Univers 55', sans-serif;
+    }
+
+    .view-btn.active {
+      background: #3498db;
+      color: white;
+      border-color: #3498db;
+    }
+
+    /* Table View */
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .results-table thead {
+      background: #f8f9fa;
+      border-bottom: 2px solid #dee2e6;
+    }
+
+    .results-table th {
+      padding: 16px 12px;
+      text-align: left;
+      font-family: 'Univers 65', sans-serif;
+      font-size: 13px;
+      color: #2c3e50;
+      font-weight: 600;
+      border-bottom: none;
+    }
+    
+    .results-table td {
+      padding: 16px 12px;
+      border-bottom: 1px solid #f0f0f0;
+      vertical-align: middle;
+      font-size: 14px;
+    }
+    
+    .results-table tr:hover {
+      background: #f8f9fa;
+    }
+    
+    /* Track Image & Info */
+    .track-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .track-image {
+      width: 50px;
+      height: 50px;
+      border-radius: 4px;
+      object-fit: cover;
+      background: #f0f0f0;
+    }
+    
+    .track-image-placeholder {
+      width: 50px;
+      height: 50px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-family: 'Univers 93', sans-serif;
+      font-size: 18px;
+    }
+    
+    .track-details {
+      flex: 1;
+    }
+    
+    /* Platform Links */
+    .platform-links {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    
+    .platform-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      background: #f8f9fa;
+      border-radius: 4px;
+      text-decoration: none;
+      color: #555;
+      font-size: 11px;
+      transition: all 0.2s;
+    }
+    
+    .platform-link:hover {
+      background: #3498db;
+      color: white;
+    }
+    
+    .platform-link svg {
+      width: 14px;
+      height: 14px;
+      text-transform: uppercase;
+    }
+
+    .results-table td {
+      padding: 15px 12px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .results-table tr:hover {
+      background: #f8f9fa;
+    }
+
+    .song-title {
+      font-family: 'Univers 93', sans-serif;
+      color: #2c3e50;
+      margin-bottom: 3px;
+    }
+
+    .song-artist {
+      font-size: 13px;
+      color: #7f8c8d;
+    }
+
+    .trend-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .trend-high {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .trend-medium {
+      background: #fff3e0;
+      color: #f57c00;
+    }
+
+    .action-btn {
+      padding: 6px 12px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Univers 55', sans-serif;
+      font-size: 13px;
+    }
+
+    .action-btn:hover {
+      background: #2980b9;
+    }
+
+    /* Loading State */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #7f8c8d;
+    }
+
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #3498db;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <img src="/static/sunday-logo-black.png" alt="Sunday">
+    </div>
+    
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        </svg>
+        Home
+      </a>
+      
+      <a href="/dashboard/discover" class="nav-item active">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        Discover
+      </a>
+      
+      <a href="/dashboard/outreach" class="nav-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+        </svg>
+        Outreach
+      </a>
+      
+      <a href="/dashboard/contracts" class="nav-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        Contracts
+      </a>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <div class="user-avatar">EM</div>
+        <div class="user-info">
+          <div class="user-name" id="userName">Emil Madsen</div>
+          <div class="user-email" id="userEmail">emil@thelabelsunday.com</div>
+        </div>
+      </div>
+      <a href="#" class="logout-btn" onclick="handleLogout(event)">Log Out</a>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="page-header">
+      <h1 class="page-title">Discover</h1>
+      <p class="page-description">Find trending songs and sounds with no label attachment</p>
+    </div>
+
+    <!-- View Tabs -->
+    <div class="view-tabs">
+      <button class="view-tab active" id="tiktokTrendingTab" onclick="switchView('tiktok-trending')">
+        📱 TikTok Trending (Live)
+      </button>
+      <button class="view-tab" id="spotifyTrendingTab" onclick="switchView('spotify-trending')">
+        🎧 Spotify Trending (Daily Streams)
+      </button>
+      <button class="view-tab" id="creatorsTab" onclick="switchView('creators')">
+        👥 Top Creators
+      </button>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-container">
+      <div class="filters-header">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+          <input type="text" id="searchInput" placeholder="Search by title, artist, or Spotify URL">
+        </div>
+        
+        <div class="filter-controls">
+          <button id="refreshBtn" onclick="refreshData()" style="display: flex; align-items: center; gap: 8px; padding: 10px 16px; background: #1DB954; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px; transition: all 0.3s;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36M20.49 15a9 9 0 0 1-14.85 3.36"></path>
+            </svg>
+            <span>Refresh Data</span>
+          </button>
+          
+          <div class="market-dropdown-wrapper" style="position: relative;">
+            <div class="market-dropdown" id="marketDropdown">
+              <span><span id="selectedMarketEmoji">🌍</span> <span id="selectedMarket">Worldwide</span></span>
+              <span>▼</span>
+            </div>
+            
+            <!-- Market Dropdown Content -->
+            <div class="market-dropdown-content" id="marketDropdownContent" style="display: none; position: absolute; top: calc(100% + 4px); left: 0; background: white; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 1000; min-width: 280px; max-width: 320px;">
+        <input type="text" class="market-search" placeholder="Search countries..." id="marketSearch" style="width: 100%; padding: 12px; border: none; border-bottom: 1px solid #eee; font-size: 14px; outline: none;">
+        <div class="market-options" id="marketOptions" style="max-height: 300px; overflow-y: auto;">
+          <div class="market-option active" data-value="" data-label="Worldwide" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="flag" style="font-size: 18px; margin-right: 12px;">🌍</span>
+            <span class="country-name" style="flex: 1; font-size: 14px;">Worldwide</span>
+            <span class="country-code" style="color: #999; font-size: 12px;"></span>
+          </div>
+          <div class="market-option" data-value="AD" data-label="Andorra" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Andorra</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">AD</span>
+          </div>
+          <div class="market-option" data-value="AE" data-label="United Arab Emirates" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">United Arab Emirates</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">AE</span>
+          </div>
+          <div class="market-option" data-value="AF" data-label="Afghanistan" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Afghanistan</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">AF</span>
+          </div>
+          <div class="market-option" data-value="AG" data-label="Antigua and Barbuda" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Antigua and Barbuda</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">AG</span>
+          </div>
+          <div class="market-option" data-value="AI" data-label="Anguilla" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Anguilla</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">AI</span>
+          </div>
+          <div class="market-option" data-value="AL" data-label="Albania" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Albania</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">AL</span>
+          </div>
+          <div class="market-option" data-value="AM" data-label="Armenia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Armenia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">AM</span>
+          </div>
+          <div class="market-option" data-value="AO" data-label="Angola" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Angola</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">AO</span>
+          </div>
+          <div class="market-option" data-value="AQ" data-label="Antarctica" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Antarctica</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">AQ</span>
+          </div>
+          <div class="market-option" data-value="AR" data-label="Argentina" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Argentina</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">AR</span>
+          </div>
+          <div class="market-option" data-value="AS" data-label="American Samoa" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">American Samoa</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">AS</span>
+          </div>
+          <div class="market-option" data-value="AT" data-label="Austria" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Austria</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">AT</span>
+          </div>
+          <div class="market-option" data-value="AU" data-label="Australia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Australia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">AU</span>
+          </div>
+          <div class="market-option" data-value="AW" data-label="Aruba" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Aruba</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">AW</span>
+          </div>
+          <div class="market-option" data-value="AX" data-label="Åland Islands" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Åland Islands</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">AX</span>
+          </div>
+          <div class="market-option" data-value="AZ" data-label="Azerbaijan" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Azerbaijan</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">AZ</span>
+          </div>
+          <div class="market-option" data-value="BA" data-label="Bosnia and Herzegovina" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Bosnia and Herzegovina</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">BA</span>
+          </div>
+          <div class="market-option" data-value="BB" data-label="Barbados" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Barbados</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">BB</span>
+          </div>
+          <div class="market-option" data-value="BD" data-label="Bangladesh" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Bangladesh</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">BD</span>
+          </div>
+          <div class="market-option" data-value="BE" data-label="Belgium" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Belgium</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">BE</span>
+          </div>
+          <div class="market-option" data-value="BF" data-label="Burkina Faso" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Burkina Faso</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">BF</span>
+          </div>
+          <div class="market-option" data-value="BG" data-label="Bulgaria" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Bulgaria</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">BG</span>
+          </div>
+          <div class="market-option" data-value="BH" data-label="Bahrain" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Bahrain</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">BH</span>
+          </div>
+          <div class="market-option" data-value="BI" data-label="Burundi" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Burundi</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">BI</span>
+          </div>
+          <div class="market-option" data-value="BJ" data-label="Benin" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Benin</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">BJ</span>
+          </div>
+          <div class="market-option" data-value="BL" data-label="Saint Barthélemy" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Saint Barthélemy</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">BL</span>
+          </div>
+          <div class="market-option" data-value="BM" data-label="Bermuda" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Bermuda</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">BM</span>
+          </div>
+          <div class="market-option" data-value="BN" data-label="Brunei" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Brunei</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">BN</span>
+          </div>
+          <div class="market-option" data-value="BO" data-label="Bolivia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Bolivia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">BO</span>
+          </div>
+          <div class="market-option" data-value="BQ" data-label="Caribbean Netherlands" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Caribbean Netherlands</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">BQ</span>
+          </div>
+          <div class="market-option" data-value="BR" data-label="Brazil" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Brazil</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">BR</span>
+          </div>
+          <div class="market-option" data-value="BS" data-label="Bahamas" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Bahamas</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">BS</span>
+          </div>
+          <div class="market-option" data-value="BT" data-label="Bhutan" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Bhutan</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">BT</span>
+          </div>
+          <div class="market-option" data-value="BV" data-label="Bouvet Island" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Bouvet Island</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">BV</span>
+          </div>
+          <div class="market-option" data-value="BW" data-label="Botswana" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Botswana</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">BW</span>
+          </div>
+          <div class="market-option" data-value="BY" data-label="Belarus" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Belarus</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">BY</span>
+          </div>
+          <div class="market-option" data-value="BZ" data-label="Belize" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Belize</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">BZ</span>
+          </div>
+          <div class="market-option" data-value="CA" data-label="Canada" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Canada</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">CA</span>
+          </div>
+          <div class="market-option" data-value="CC" data-label="Cocos Islands" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Cocos Islands</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">CC</span>
+          </div>
+          <div class="market-option" data-value="CD" data-label="Democratic Republic of the Congo" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">DR Congo</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">CD</span>
+          </div>
+          <div class="market-option" data-value="CF" data-label="Central African Republic" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Central African Republic</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">CF</span>
+          </div>
+          <div class="market-option" data-value="CG" data-label="Republic of the Congo" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Congo</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">CG</span>
+          </div>
+          <div class="market-option" data-value="CH" data-label="Switzerland" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Switzerland</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">CH</span>
+          </div>
+          <div class="market-option" data-value="CI" data-label="Côte d'Ivoire" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Côte d'Ivoire</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">CI</span>
+          </div>
+          <div class="market-option" data-value="CK" data-label="Cook Islands" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Cook Islands</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">CK</span>
+          </div>
+          <div class="market-option" data-value="CL" data-label="Chile" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Chile</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">CL</span>
+          </div>
+          <div class="market-option" data-value="CM" data-label="Cameroon" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Cameroon</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">CM</span>
+          </div>
+          <div class="market-option" data-value="CN" data-label="China" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">China</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">CN</span>
+          </div>
+          <div class="market-option" data-value="CO" data-label="Colombia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Colombia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">CO</span>
+          </div>
+          <div class="market-option" data-value="CR" data-label="Costa Rica" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Costa Rica</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">CR</span>
+          </div>
+          <div class="market-option" data-value="CU" data-label="Cuba" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Cuba</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">CU</span>
+          </div>
+          <div class="market-option" data-value="CV" data-label="Cape Verde" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Cape Verde</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">CV</span>
+          </div>
+          <div class="market-option" data-value="CW" data-label="Curaçao" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Curaçao</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">CW</span>
+          </div>
+          <div class="market-option" data-value="CX" data-label="Christmas Island" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Christmas Island</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">CX</span>
+          </div>
+          <div class="market-option" data-value="CY" data-label="Cyprus" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Cyprus</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">CY</span>
+          </div>
+          <div class="market-option" data-value="CZ" data-label="Czech Republic" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Czech Republic</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">CZ</span>
+          </div>
+          <div class="market-option" data-value="DE" data-label="Germany" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Germany</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">DE</span>
+          </div>
+          <div class="market-option" data-value="DJ" data-label="Djibouti" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Djibouti</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">DJ</span>
+          </div>
+          <div class="market-option" data-value="DK" data-label="Denmark" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Denmark</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">DK</span>
+          </div>
+          <div class="market-option" data-value="DM" data-label="Dominica" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Dominica</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">DM</span>
+          </div>
+          <div class="market-option" data-value="DO" data-label="Dominican Republic" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Dominican Republic</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">DO</span>
+          </div>
+          <div class="market-option" data-value="DZ" data-label="Algeria" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Algeria</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">DZ</span>
+          </div>
+          <div class="market-option" data-value="EC" data-label="Ecuador" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Ecuador</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">EC</span>
+          </div>
+          <div class="market-option" data-value="EE" data-label="Estonia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Estonia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">EE</span>
+          </div>
+          <div class="market-option" data-value="EG" data-label="Egypt" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Egypt</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">EG</span>
+          </div>
+          <div class="market-option" data-value="EH" data-label="Western Sahara" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Western Sahara</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">EH</span>
+          </div>
+          <div class="market-option" data-value="ER" data-label="Eritrea" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Eritrea</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">ER</span>
+          </div>
+          <div class="market-option" data-value="ES" data-label="Spain" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Spain</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">ES</span>
+          </div>
+          <div class="market-option" data-value="ET" data-label="Ethiopia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Ethiopia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">ET</span>
+          </div>
+          <div class="market-option" data-value="FI" data-label="Finland" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Finland</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">FI</span>
+          </div>
+          <div class="market-option" data-value="FJ" data-label="Fiji" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Fiji</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">FJ</span>
+          </div>
+          <div class="market-option" data-value="FK" data-label="Falkland Islands" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Falkland Islands</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">FK</span>
+          </div>
+          <div class="market-option" data-value="FM" data-label="Micronesia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Micronesia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">FM</span>
+          </div>
+          <div class="market-option" data-value="FO" data-label="Faroe Islands" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Faroe Islands</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">FO</span>
+          </div>
+          <div class="market-option" data-value="FR" data-label="France" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">France</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">FR</span>
+          </div>
+          <div class="market-option" data-value="GA" data-label="Gabon" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Gabon</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">GA</span>
+          </div>
+          <div class="market-option" data-value="GB" data-label="United Kingdom" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">United Kingdom</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">GB</span>
+          </div>
+          <div class="market-option" data-value="GD" data-label="Grenada" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Grenada</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">GD</span>
+          </div>
+          <div class="market-option" data-value="GE" data-label="Georgia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Georgia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">GE</span>
+          </div>
+          <div class="market-option" data-value="GF" data-label="French Guiana" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">French Guiana</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">GF</span>
+          </div>
+          <div class="market-option" data-value="GG" data-label="Guernsey" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Guernsey</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">GG</span>
+          </div>
+          <div class="market-option" data-value="GH" data-label="Ghana" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Ghana</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">GH</span>
+          </div>
+          <div class="market-option" data-value="GI" data-label="Gibraltar" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Gibraltar</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">GI</span>
+          </div>
+          <div class="market-option" data-value="GL" data-label="Greenland" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Greenland</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">GL</span>
+          </div>
+          <div class="market-option" data-value="GM" data-label="Gambia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Gambia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">GM</span>
+          </div>
+          <div class="market-option" data-value="GN" data-label="Guinea" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Guinea</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">GN</span>
+          </div>
+          <div class="market-option" data-value="GP" data-label="Guadeloupe" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Guadeloupe</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">GP</span>
+          </div>
+          <div class="market-option" data-value="GQ" data-label="Equatorial Guinea" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Equatorial Guinea</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">GQ</span>
+          </div>
+          <div class="market-option" data-value="GR" data-label="Greece" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Greece</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">GR</span>
+          </div>
+          <div class="market-option" data-value="GS" data-label="South Georgia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">South Georgia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">GS</span>
+          </div>
+          <div class="market-option" data-value="GT" data-label="Guatemala" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Guatemala</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">GT</span>
+          </div>
+          <div class="market-option" data-value="GU" data-label="Guam" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Guam</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">GU</span>
+          </div>
+          <div class="market-option" data-value="GW" data-label="Guinea-Bissau" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Guinea-Bissau</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">GW</span>
+          </div>
+          <div class="market-option" data-value="GY" data-label="Guyana" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Guyana</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">GY</span>
+          </div>
+          <div class="market-option" data-value="HK" data-label="Hong Kong" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Hong Kong</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">HK</span>
+          </div>
+          <div class="market-option" data-value="HM" data-label="Heard Island" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Heard Island</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">HM</span>
+          </div>
+          <div class="market-option" data-value="HN" data-label="Honduras" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Honduras</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">HN</span>
+          </div>
+          <div class="market-option" data-value="HR" data-label="Croatia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Croatia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">HR</span>
+          </div>
+          <div class="market-option" data-value="HT" data-label="Haiti" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Haiti</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">HT</span>
+          </div>
+          <div class="market-option" data-value="HU" data-label="Hungary" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Hungary</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">HU</span>
+          </div>
+          <div class="market-option" data-value="ID" data-label="Indonesia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Indonesia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">ID</span>
+          </div>
+          <div class="market-option" data-value="IE" data-label="Ireland" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Ireland</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">IE</span>
+          </div>
+          <div class="market-option" data-value="IL" data-label="Israel" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Israel</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">IL</span>
+          </div>
+          <div class="market-option" data-value="IM" data-label="Isle of Man" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Isle of Man</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">IM</span>
+          </div>
+          <div class="market-option" data-value="IN" data-label="India" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">India</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">IN</span>
+          </div>
+          <div class="market-option" data-value="IO" data-label="British Indian Ocean Territory" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">British Indian Ocean</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">IO</span>
+          </div>
+          <div class="market-option" data-value="IQ" data-label="Iraq" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Iraq</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">IQ</span>
+          </div>
+          <div class="market-option" data-value="IR" data-label="Iran" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Iran</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">IR</span>
+          </div>
+          <div class="market-option" data-value="IS" data-label="Iceland" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Iceland</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">IS</span>
+          </div>
+          <div class="market-option" data-value="IT" data-label="Italy" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Italy</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">IT</span>
+          </div>
+          <div class="market-option" data-value="JE" data-label="Jersey" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Jersey</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">JE</span>
+          </div>
+          <div class="market-option" data-value="JM" data-label="Jamaica" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Jamaica</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">JM</span>
+          </div>
+          <div class="market-option" data-value="JO" data-label="Jordan" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Jordan</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">JO</span>
+          </div>
+          <div class="market-option" data-value="JP" data-label="Japan" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Japan</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">JP</span>
+          </div>
+          <div class="market-option" data-value="KE" data-label="Kenya" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Kenya</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">KE</span>
+          </div>
+          <div class="market-option" data-value="KG" data-label="Kyrgyzstan" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Kyrgyzstan</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">KG</span>
+          </div>
+          <div class="market-option" data-value="KH" data-label="Cambodia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Cambodia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">KH</span>
+          </div>
+          <div class="market-option" data-value="KI" data-label="Kiribati" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Kiribati</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">KI</span>
+          </div>
+          <div class="market-option" data-value="KM" data-label="Comoros" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Comoros</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">KM</span>
+          </div>
+          <div class="market-option" data-value="KN" data-label="Saint Kitts and Nevis" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Saint Kitts and Nevis</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">KN</span>
+          </div>
+          <div class="market-option" data-value="KP" data-label="North Korea" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">North Korea</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">KP</span>
+          </div>
+          <div class="market-option" data-value="KR" data-label="South Korea" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">South Korea</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">KR</span>
+          </div>
+          <div class="market-option" data-value="KW" data-label="Kuwait" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Kuwait</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">KW</span>
+          </div>
+          <div class="market-option" data-value="KY" data-label="Cayman Islands" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Cayman Islands</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">KY</span>
+          </div>
+          <div class="market-option" data-value="KZ" data-label="Kazakhstan" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Kazakhstan</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">KZ</span>
+          </div>
+          <div class="market-option" data-value="LA" data-label="Laos" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Laos</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">LA</span>
+          </div>
+          <div class="market-option" data-value="LB" data-label="Lebanon" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Lebanon</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">LB</span>
+          </div>
+          <div class="market-option" data-value="LC" data-label="Saint Lucia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Saint Lucia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">LC</span>
+          </div>
+          <div class="market-option" data-value="LI" data-label="Liechtenstein" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Liechtenstein</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">LI</span>
+          </div>
+          <div class="market-option" data-value="LK" data-label="Sri Lanka" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Sri Lanka</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">LK</span>
+          </div>
+          <div class="market-option" data-value="LR" data-label="Liberia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Liberia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">LR</span>
+          </div>
+          <div class="market-option" data-value="LS" data-label="Lesotho" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Lesotho</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">LS</span>
+          </div>
+          <div class="market-option" data-value="LT" data-label="Lithuania" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Lithuania</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">LT</span>
+          </div>
+          <div class="market-option" data-value="LU" data-label="Luxembourg" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Luxembourg</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">LU</span>
+          </div>
+          <div class="market-option" data-value="LV" data-label="Latvia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Latvia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">LV</span>
+          </div>
+          <div class="market-option" data-value="LY" data-label="Libya" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Libya</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">LY</span>
+          </div>
+          <div class="market-option" data-value="MA" data-label="Morocco" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Morocco</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">MA</span>
+          </div>
+          <div class="market-option" data-value="MC" data-label="Monaco" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Monaco</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">MC</span>
+          </div>
+          <div class="market-option" data-value="MD" data-label="Moldova" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Moldova</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">MD</span>
+          </div>
+          <div class="market-option" data-value="ME" data-label="Montenegro" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Montenegro</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">ME</span>
+          </div>
+          <div class="market-option" data-value="MF" data-label="Saint Martin" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Saint Martin</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">MF</span>
+          </div>
+          <div class="market-option" data-value="MG" data-label="Madagascar" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Madagascar</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">MG</span>
+          </div>
+          <div class="market-option" data-value="MH" data-label="Marshall Islands" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Marshall Islands</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">MH</span>
+          </div>
+          <div class="market-option" data-value="MK" data-label="North Macedonia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">North Macedonia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">MK</span>
+          </div>
+          <div class="market-option" data-value="ML" data-label="Mali" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Mali</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">ML</span>
+          </div>
+          <div class="market-option" data-value="MM" data-label="Myanmar" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Myanmar</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">MM</span>
+          </div>
+          <div class="market-option" data-value="MN" data-label="Mongolia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Mongolia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">MN</span>
+          </div>
+          <div class="market-option" data-value="MO" data-label="Macau" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Macau</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">MO</span>
+          </div>
+          <div class="market-option" data-value="MP" data-label="Northern Mariana Islands" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Northern Mariana Islands</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">MP</span>
+          </div>
+          <div class="market-option" data-value="MQ" data-label="Martinique" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Martinique</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">MQ</span>
+          </div>
+          <div class="market-option" data-value="MR" data-label="Mauritania" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Mauritania</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">MR</span>
+          </div>
+          <div class="market-option" data-value="MS" data-label="Montserrat" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Montserrat</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">MS</span>
+          </div>
+          <div class="market-option" data-value="MT" data-label="Malta" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Malta</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">MT</span>
+          </div>
+          <div class="market-option" data-value="MU" data-label="Mauritius" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Mauritius</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">MU</span>
+          </div>
+          <div class="market-option" data-value="MV" data-label="Maldives" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Maldives</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">MV</span>
+          </div>
+          <div class="market-option" data-value="MW" data-label="Malawi" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Malawi</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">MW</span>
+          </div>
+          <div class="market-option" data-value="MX" data-label="Mexico" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Mexico</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">MX</span>
+          </div>
+          <div class="market-option" data-value="MY" data-label="Malaysia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Malaysia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">MY</span>
+          </div>
+          <div class="market-option" data-value="MZ" data-label="Mozambique" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Mozambique</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">MZ</span>
+          </div>
+          <div class="market-option" data-value="NA" data-label="Namibia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Namibia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">NA</span>
+          </div>
+          <div class="market-option" data-value="NC" data-label="New Caledonia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">New Caledonia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">NC</span>
+          </div>
+          <div class="market-option" data-value="NE" data-label="Niger" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Niger</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">NE</span>
+          </div>
+          <div class="market-option" data-value="NF" data-label="Norfolk Island" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Norfolk Island</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">NF</span>
+          </div>
+          <div class="market-option" data-value="NG" data-label="Nigeria" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Nigeria</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">NG</span>
+          </div>
+          <div class="market-option" data-value="NI" data-label="Nicaragua" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Nicaragua</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">NI</span>
+          </div>
+          <div class="market-option" data-value="NL" data-label="Netherlands" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Netherlands</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">NL</span>
+          </div>
+          <div class="market-option" data-value="NO" data-label="Norway" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Norway</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">NO</span>
+          </div>
+          <div class="market-option" data-value="NP" data-label="Nepal" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Nepal</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">NP</span>
+          </div>
+          <div class="market-option" data-value="NR" data-label="Nauru" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Nauru</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">NR</span>
+          </div>
+          <div class="market-option" data-value="NU" data-label="Niue" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Niue</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">NU</span>
+          </div>
+          <div class="market-option" data-value="NZ" data-label="New Zealand" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">New Zealand</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">NZ</span>
+          </div>
+          <div class="market-option" data-value="OM" data-label="Oman" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Oman</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">OM</span>
+          </div>
+          <div class="market-option" data-value="PA" data-label="Panama" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Panama</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">PA</span>
+          </div>
+          <div class="market-option" data-value="PE" data-label="Peru" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Peru</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">PE</span>
+          </div>
+          <div class="market-option" data-value="PF" data-label="French Polynesia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">French Polynesia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">PF</span>
+          </div>
+          <div class="market-option" data-value="PG" data-label="Papua New Guinea" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Papua New Guinea</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">PG</span>
+          </div>
+          <div class="market-option" data-value="PH" data-label="Philippines" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Philippines</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">PH</span>
+          </div>
+          <div class="market-option" data-value="PK" data-label="Pakistan" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Pakistan</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">PK</span>
+          </div>
+          <div class="market-option" data-value="PL" data-label="Poland" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Poland</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">PL</span>
+          </div>
+          <div class="market-option" data-value="PM" data-label="Saint Pierre and Miquelon" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Saint Pierre & Miquelon</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">PM</span>
+          </div>
+          <div class="market-option" data-value="PN" data-label="Pitcairn Islands" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Pitcairn Islands</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">PN</span>
+          </div>
+          <div class="market-option" data-value="PR" data-label="Puerto Rico" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Puerto Rico</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">PR</span>
+          </div>
+          <div class="market-option" data-value="PS" data-label="Palestine" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Palestine</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">PS</span>
+          </div>
+          <div class="market-option" data-value="PT" data-label="Portugal" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Portugal</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">PT</span>
+          </div>
+          <div class="market-option" data-value="PW" data-label="Palau" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Palau</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">PW</span>
+          </div>
+          <div class="market-option" data-value="PY" data-label="Paraguay" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Paraguay</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">PY</span>
+          </div>
+          <div class="market-option" data-value="QA" data-label="Qatar" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Qatar</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">QA</span>
+          </div>
+          <div class="market-option" data-value="RE" data-label="Réunion" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Réunion</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">RE</span>
+          </div>
+          <div class="market-option" data-value="RO" data-label="Romania" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Romania</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">RO</span>
+          </div>
+          <div class="market-option" data-value="RS" data-label="Serbia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Serbia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">RS</span>
+          </div>
+          <div class="market-option" data-value="RU" data-label="Russia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Russia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">RU</span>
+          </div>
+          <div class="market-option" data-value="RW" data-label="Rwanda" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Rwanda</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">RW</span>
+          </div>
+          <div class="market-option" data-value="SA" data-label="Saudi Arabia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Saudi Arabia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">SA</span>
+          </div>
+          <div class="market-option" data-value="SB" data-label="Solomon Islands" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Solomon Islands</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">SB</span>
+          </div>
+          <div class="market-option" data-value="SC" data-label="Seychelles" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Seychelles</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">SC</span>
+          </div>
+          <div class="market-option" data-value="SD" data-label="Sudan" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Sudan</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">SD</span>
+          </div>
+          <div class="market-option" data-value="SE" data-label="Sweden" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Sweden</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">SE</span>
+          </div>
+          <div class="market-option" data-value="SG" data-label="Singapore" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Singapore</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">SG</span>
+          </div>
+          <div class="market-option" data-value="SH" data-label="Saint Helena" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Saint Helena</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">SH</span>
+          </div>
+          <div class="market-option" data-value="SI" data-label="Slovenia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Slovenia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">SI</span>
+          </div>
+          <div class="market-option" data-value="SJ" data-label="Svalbard and Jan Mayen" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Svalbard & Jan Mayen</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">SJ</span>
+          </div>
+          <div class="market-option" data-value="SK" data-label="Slovakia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Slovakia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">SK</span>
+          </div>
+          <div class="market-option" data-value="SL" data-label="Sierra Leone" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Sierra Leone</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">SL</span>
+          </div>
+          <div class="market-option" data-value="SM" data-label="San Marino" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">San Marino</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">SM</span>
+          </div>
+          <div class="market-option" data-value="SN" data-label="Senegal" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Senegal</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">SN</span>
+          </div>
+          <div class="market-option" data-value="SO" data-label="Somalia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Somalia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">SO</span>
+          </div>
+          <div class="market-option" data-value="SR" data-label="Suriname" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Suriname</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">SR</span>
+          </div>
+          <div class="market-option" data-value="SS" data-label="South Sudan" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">South Sudan</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">SS</span>
+          </div>
+          <div class="market-option" data-value="ST" data-label="São Tomé and Príncipe" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">São Tomé & Príncipe</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">ST</span>
+          </div>
+          <div class="market-option" data-value="SV" data-label="El Salvador" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">El Salvador</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">SV</span>
+          </div>
+          <div class="market-option" data-value="SX" data-label="Sint Maarten" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Sint Maarten</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">SX</span>
+          </div>
+          <div class="market-option" data-value="SY" data-label="Syria" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Syria</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">SY</span>
+          </div>
+          <div class="market-option" data-value="SZ" data-label="Eswatini" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Eswatini</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">SZ</span>
+          </div>
+          <div class="market-option" data-value="TC" data-label="Turks and Caicos Islands" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Turks & Caicos</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">TC</span>
+          </div>
+          <div class="market-option" data-value="TD" data-label="Chad" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Chad</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">TD</span>
+          </div>
+          <div class="market-option" data-value="TF" data-label="French Southern Territories" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">French Southern Terr.</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">TF</span>
+          </div>
+          <div class="market-option" data-value="TG" data-label="Togo" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Togo</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">TG</span>
+          </div>
+          <div class="market-option" data-value="TH" data-label="Thailand" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Thailand</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">TH</span>
+          </div>
+          <div class="market-option" data-value="TJ" data-label="Tajikistan" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Tajikistan</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">TJ</span>
+          </div>
+          <div class="market-option" data-value="TK" data-label="Tokelau" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Tokelau</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">TK</span>
+          </div>
+          <div class="market-option" data-value="TL" data-label="Timor-Leste" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Timor-Leste</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">TL</span>
+          </div>
+          <div class="market-option" data-value="TM" data-label="Turkmenistan" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Turkmenistan</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">TM</span>
+          </div>
+          <div class="market-option" data-value="TN" data-label="Tunisia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Tunisia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">TN</span>
+          </div>
+          <div class="market-option" data-value="TO" data-label="Tonga" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Tonga</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">TO</span>
+          </div>
+          <div class="market-option" data-value="TR" data-label="Turkey" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Turkey</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">TR</span>
+          </div>
+          <div class="market-option" data-value="TT" data-label="Trinidad and Tobago" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Trinidad & Tobago</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">TT</span>
+          </div>
+          <div class="market-option" data-value="TV" data-label="Tuvalu" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Tuvalu</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">TV</span>
+          </div>
+          <div class="market-option" data-value="TW" data-label="Taiwan" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Taiwan</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">TW</span>
+          </div>
+          <div class="market-option" data-value="TZ" data-label="Tanzania" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Tanzania</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">TZ</span>
+          </div>
+          <div class="market-option" data-value="UA" data-label="Ukraine" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Ukraine</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">UA</span>
+          </div>
+          <div class="market-option" data-value="UG" data-label="Uganda" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Uganda</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">UG</span>
+          </div>
+          <div class="market-option" data-value="UM" data-label="U.S. Minor Outlying Islands" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">U.S. Minor Islands</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">UM</span>
+          </div>
+          <div class="market-option" data-value="US" data-label="United States" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">United States</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">US</span>
+          </div>
+          <div class="market-option" data-value="UY" data-label="Uruguay" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Uruguay</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">UY</span>
+          </div>
+          <div class="market-option" data-value="UZ" data-label="Uzbekistan" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Uzbekistan</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">UZ</span>
+          </div>
+          <div class="market-option" data-value="VA" data-label="Vatican City" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Vatican City</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">VA</span>
+          </div>
+          <div class="market-option" data-value="VC" data-label="Saint Vincent and the Grenadines" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">St. Vincent & Grenadines</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">VC</span>
+          </div>
+          <div class="market-option" data-value="VE" data-label="Venezuela" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Venezuela</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">VE</span>
+          </div>
+          <div class="market-option" data-value="VG" data-label="British Virgin Islands" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">British Virgin Islands</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">VG</span>
+          </div>
+          <div class="market-option" data-value="VI" data-label="U.S. Virgin Islands" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">U.S. Virgin Islands</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">VI</span>
+          </div>
+          <div class="market-option" data-value="VN" data-label="Vietnam" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Vietnam</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">VN</span>
+          </div>
+          <div class="market-option" data-value="VU" data-label="Vanuatu" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Vanuatu</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">VU</span>
+          </div>
+          <div class="market-option" data-value="WF" data-label="Wallis and Futuna" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Wallis & Futuna</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">WF</span>
+          </div>
+          <div class="market-option" data-value="WS" data-label="Samoa" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Samoa</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">WS</span>
+          </div>
+          <div class="market-option" data-value="XK" data-label="Kosovo" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Kosovo</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">XK</span>
+          </div>
+          <div class="market-option" data-value="YE" data-label="Yemen" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Yemen</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">YE</span>
+          </div>
+          <div class="market-option" data-value="YT" data-label="Mayotte" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Mayotte</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">YT</span>
+          </div>
+          <div class="market-option" data-value="ZA" data-label="South Africa" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">South Africa</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">ZA</span>
+          </div>
+          <div class="market-option" data-value="ZM" data-label="Zambia" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Zambia</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">ZM</span>
+          </div>
+          <div class="market-option" data-value="ZW" data-label="Zimbabwe" style="display: flex; align-items: center; padding: 12px 16px; cursor: pointer;">
+            <span class="country-name" style="flex: 1; font-size: 14px;">Zimbabwe</span>
+            <span class="country-code" style="color: #999; font-size: 12px;">ZW</span>
+          </div>
+        </div>
+      </div>
+          </div>
+          
+          <div class="filters-dropdown" id="filtersToggle">
+            <span>Filters</span>
+            <span id="filtersArrow">▼</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collapsible Filters Content -->
+      <div class="filters-content" id="filtersContent">
+        <div class="filters-row">
+          <div class="filter-group">
+            <label class="filter-label">Sort By</label>
+            <div class="filter-buttons">
+              <button class="filter-btn" data-metric="tiktok_last_24_hours_video_percentage">24h % Growth</button>
+              <button class="filter-btn active" data-metric="tiktok_last_24_hours_video_count">24 Hours</button>
+              <button class="filter-btn" data-metric="tiktok_last_7_days_video_count">Last 7 Days</button>
+              <button class="filter-btn" data-metric="tiktok_total_video_count">All Time</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="filters-row" id="minTiktoksFilter">
+          <div class="filter-group">
+            <label class="filter-label">Minimum Total TikToks</label>
+            <div class="filter-buttons">
+              <button class="filter-btn min-tiktok-btn" data-value="100">100</button>
+              <button class="filter-btn min-tiktok-btn" data-value="500">500</button>
+              <button class="filter-btn min-tiktok-btn" data-value="1000">1,000</button>
+              <button class="filter-btn min-tiktok-btn" data-value="10000">10,000</button>
+            </div>
+            <input type="number" id="customMinTiktoks" class="filter-input" placeholder="Custom min-max" style="margin-top: 10px;">
+          </div>
+        </div>
+
+        <div class="filters-row">
+          <div class="filter-group">
+            <label class="filter-label">Label Type</label>
+            <div class="filter-buttons">
+              <button class="filter-btn label-type-btn active" data-value="">All</button>
+              <button class="filter-btn label-type-btn" data-value="major">Universal</button>
+              <button class="filter-btn label-type-btn" data-value="sony">Sony</button>
+              <button class="filter-btn label-type-btn" data-value="warner">Warner</button>
+              <button class="filter-btn label-type-btn" data-value="bmg">BMG</button>
+              <button class="filter-btn label-type-btn" data-value="indie">Big Indie Labels</button>
+              <button class="filter-btn label-type-btn" data-value="unsigned">Other / Unsigned</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="results-container">
+      <div class="results-header">
+        <div class="results-count" id="resultsCount">Loading...</div>
+        <div class="view-toggle">
+          <button class="view-btn active" id="tableViewBtn">Table</button>
+          <button class="view-btn" id="cardViewBtn">Cards</button>
+        </div>
+      </div>
+
+      <div id="resultsContent">
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>Loading trending content...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Logout Handler -->
+  <script>
+    function handleLogout(event) {
+      event.preventDefault();
+      // Clear local storage
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('user_name');
+      localStorage.removeItem('user_email');
+      // Redirect to logout endpoint which will clear Microsoft session
+      window.location.href = '/auth/logout';
+    }
+  </script>
+
+  <!-- External JavaScript Modules -->
+  <script src="/static/js/discover-main.js"></script>
+  <script src="/static/js/discover-table.js"></script>
+  <script src="/static/js/discover-analytics.js"></script>
+  
+  <!-- Analytics Modal -->
+  <div id="analyticsModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title" id="modalSongTitle">Song Title</div>
+          <div class="modal-subtitle" id="modalSongArtist">Artist Name</div>
+        </div>
+        <button class="modal-close" onclick="closeAnalyticsModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="analyticsCharts">
+        <!-- Charts will be inserted here -->
+      </div>
+    </div>
+  </div>
+</body>
+</html>

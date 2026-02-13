@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A&R Portal – Home</title>
+  <style>
+    @font-face {
+      font-family: 'Univers 55';
+      src: url('/static/Univers%2055%20Regular.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    @font-face {
+      font-family: 'Univers 93';
+      src: url('/static/Univers%2093%20Extra%20Black%20Extended%20Regular.otf') format('opentype');
+      font-weight: bold;
+      font-style: normal;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Univers 55', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      display: flex;
+      min-height: 100vh;
+      background: #f5f5f5;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: url('/static/background.jpg') center center / cover no-repeat;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      left: 0;
+      top: 0;
+    }
+
+    .sidebar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 0;
+    }
+
+    .sidebar > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      font-size: 18px;
+      font-weight: 600;
+      font-family: 'Univers 93', sans-serif;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .sidebar-header img {
+      width: 200px;
+      height: 20px;
+      filter: brightness(0) invert(1);
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 20px 0;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .nav-item:hover {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .nav-item.active {
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border-left: 3px solid #3498db;
+    }
+
+    .nav-item svg {
+      width: 20px;
+      height: 20px;
+      margin-right: 12px;
+    }
+
+    .sidebar-footer {
+      padding: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #3498db;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+    .user-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .user-name {
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Univers 93', sans-serif;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-email {
+      font-size: 11px;
+      color: rgba(255,255,255,0.6);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .logout-btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.3s;
+      margin-top: 12px;
+      width: 100%;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255,255,255,0.15);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-left: 250px;
+      flex: 1;
+      padding: 0;
+      overflow-y: auto;
+    }
+
+    .section {
+      background: white;
+      border-radius: 0px;
+      padding: 20px;
+      margin-bottom: 0px;
+      box-shadow: none;
+      min-height: 350px;
+    }
+
+    .welcome-section.section {
+      min-height: auto;
+      padding: 60px 40px;
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 600;
+      font-family: 'Univers 93', sans-serif;
+      margin-bottom: 15px;
+      color: #2c3e50;
+    }
+
+    .section-description {
+      color: #7f8c8d;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .section-list {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .use-section-intro {
+      display: block;
+      font-family: 'Univers 93', sans-serif;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 8px;
+    }
+
+    .section-list li {
+      padding: 8px 0;
+      padding-left: 20px;
+      position: relative;
+      color: #555;
+    }
+
+    .section-list li:before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: #3498db;
+      font-weight: bold;
+    }
+
+    .welcome-section {
+      background: url('/static/background.jpg') center center / cover no-repeat;
+      color: white;
+      position: relative;
+    }
+
+    .welcome-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 0;
+    }
+
+    .welcome-section > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .welcome-section .section-title,
+    .welcome-section .section-description {
+      color: white;
+    }
+
+    /* Content grid layout - alternating with images */
+    .content-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0px;
+      margin-bottom: 0px;
+      grid-auto-rows: 1fr;
+    }
+    
+    .content-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .content-row.reverse {
+      direction: rtl;
+    }
+
+    .content-row.reverse > * {
+      direction: ltr;
+    }
+
+    .image-placeholder {
+      background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-size: 18px;
+      font-weight: 500;
+      overflow: hidden;
+      min-height: 350px;
+      max-height: 350px;
+      line-height: 0;
+    }
+
+    .image-placeholder img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+      display: block;
+    }
+
+    @media (max-width: 1200px) {
+      .content-row {
+        grid-template-columns: 1fr;
+      }
+      
+      .image-placeholder {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <img src="/static/sunday-logo-black.png" alt="Sunday">
+    </div>
+    
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-item active">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        </svg>
+        Home
+      </a>
+      
+      <a href="/dashboard/discover" class="nav-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        Discover
+      </a>
+      
+      <a href="/dashboard/outreach" class="nav-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+        </svg>
+        Outreach
+      </a>
+      
+      <a href="/dashboard/contracts" class="nav-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        Contracts
+      </a>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <div class="user-avatar">EM</div>
+        <div class="user-info">
+          <div class="user-name" id="userName">Emil Madsen</div>
+          <div class="user-email" id="userEmail">emil@thelabelsunday.com</div>
+        </div>
+      </div>
+      <a href="#" class="logout-btn" onclick="handleLogout(event)">Log Out</a>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Row 1: Image Left, Discover Right -->
+    <div class="content-row">
+      <div class="image-placeholder">
+        <img src="/static/tilemil4.png" alt="Discover">
+      </div>
+      <div class="section">
+        <h2 class="section-title">Discover</h2>
+        <p class="section-description">
+          Explore the highest-ranking songs and sounds with no label attached. 
+          The 'Discover' tab aggregates trend data to help identify early-stage opportunities 
+          before they break widely.
+        </p>
+        <ul class="section-list">
+          <li>Monitor fast-growing songs and sounds</li>
+          <li>Identify unsigned or un-claimed repertoire</li>
+          <li>Prioritize tracks based on real-time performance signals</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Row 2: Outreach Left, Image Right -->
+    <div class="content-row reverse">
+      <div class="image-placeholder">
+        <img src="/static/tilemil2.png" alt="Outreach">
+      </div>
+      <div class="section">
+        <h2 class="section-title">Outreach</h2>
+        <p class="section-description">
+          Manage artist contact and communication directly from the portal. 
+          Outreach is integrated with Outlook and allows you to send templated 
+          or custom outreach messages.
+        </p>
+        <ul class="section-list">
+          <span class="use-section-intro">Use this section to</span>
+          <li>Contact artists directly</li>
+          <li>Send onboarding forms</li>
+          <li>Keep outreach consistent and documented</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Row 3: Image Left, Status Right -->
+    <div class="content-row">
+      <div class="image-placeholder">
+        <img src="/static/tilemil1.png" alt="Status">
+      </div>
+      <div class="section">
+        <h2 class="section-title">Contracts</h2>
+        <p class="section-description">
+          Generate professional artist contracts automatically from customizable templates. 
+          The contract generator streamlines agreement creation with built-in validation, 
+          live preview, and instant PDF export.
+        </p>
+        <ul class="section-list">
+          <span class="use-section-intro">Use this section to</span>
+          <li>Generate recording and publishing contracts</li>
+          <li>Preview contracts before downloading</li>
+          <li>Customize terms and artist details</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Logout handler
+    function handleLogout(event) {
+      event.preventDefault();
+      // Clear local storage
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('user_name');
+      localStorage.removeItem('user_email');
+      // Redirect to logout endpoint which will clear Microsoft session
+      window.location.href = '/auth/logout';
+    }
+
+    // Get user info from URL params or localStorage
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const userName = urlParams.get('name') || localStorage.getItem('user_name') || 'User';
+    const userEmail = urlParams.get('email') || localStorage.getItem('user_email') || '';
+    
+    console.log('Dashboard loaded');
+    console.log('Token from URL:', token ? 'Yes' : 'No');
+    console.log('Token in localStorage:', localStorage.getItem('access_token') ? 'Yes' : 'No');
+    
+    // Store token if present in URL
+    if (token) {
+      localStorage.setItem('access_token', token);
+      console.log('Token saved to localStorage');
+    }
+    
+    // Store user info for future use
+    if (userName && userName !== 'User') {
+      localStorage.setItem('user_name', userName);
+    }
+    if (userEmail) {
+      localStorage.setItem('user_email', userEmail);
+    }
+    
+    if (userName) {
+      document.getElementById('userName').textContent = userName;
+      
+      // Update avatar with initials
+      const initials = userName.split(' ').map(n => n[0]).join('').toUpperCase();
+      document.querySelector('.user-avatar').textContent = initials;
+    }
+    
+    if (userEmail) {
+      document.getElementById('userEmail').textContent = userEmail;
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A&R Portal - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url('/static/background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .logo {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            width: 50mm;
+            z-index: 1000;
+        }
+        
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 450px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        
+        p {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+        
+        .microsoft-btn {
+            background: #2f2f2f;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        
+        .microsoft-btn:hover {
+            background: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .microsoft-btn:active {
+            transform: translateY(0);
+        }
+        
+        .microsoft-logo {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .loader {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .user-info {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            text-align: left;
+        }
+        
+        .user-info h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .user-info p {
+            margin: 8px 0;
+            color: #555;
+            word-break: break-all;
+        }
+        
+        .user-info strong {
+            color: #333;
+        }
+        
+        .error-message {
+            display: none;
+            color: #dc3545;
+            background: #f8d7da;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <img src="/static/logo.png" alt="Logo" class="logo">
+    <div class="login-container">
+        <h1>A&R Portal</h1>
+        <p>Log ind med din Microsoft konto</p>
+        
+        <button class="microsoft-btn" onclick="loginWithMicrosoft()">
+            <svg class="microsoft-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23 23">
+                <path fill="#f3f3f3" d="M0 0h23v23H0z"/>
+                <path fill="#f35325" d="M1 1h10v10H1z"/>
+                <path fill="#81bc06" d="M12 1h10v10H12z"/>
+                <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+                <path fill="#ffba08" d="M12 12h10v10H12z"/>
+            </svg>
+            Log ind med Microsoft
+        </button>
+        
+        <div class="loader" id="loader"></div>
+        <div class="error-message" id="errorMessage"></div>
+        
+        <div class="user-info" id="userInfo">
+            <h2>Login succesfuld!</h2>
+            <p><strong>Navn:</strong> <span id="userName"></span></p>
+            <p><strong>Email:</strong> <span id="userEmail"></span></p>
+            <p><strong>Rolle:</strong> <span id="userRole"></span></p>
+            <p><strong>Token:</strong> <span id="userToken" style="font-size: 12px;"></span></p>
+        </div>
+    </div>
+    
+    <script>
+        const API_URL = 'http://localhost:8000';
+        
+        async function loginWithMicrosoft() {
+            const loader = document.getElementById('loader');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            try {
+                loader.style.display = 'block';
+                errorMessage.style.display = 'none';
+                
+                // Call the backend to get Microsoft login URL
+                const response = await fetch(`${API_URL}/auth/microsoft/login`);
+                const data = await response.json();
+                
+                if (data.auth_url) {
+                    // Redirect to Microsoft login
+                    window.location.href = data.auth_url;
+                } else {
+                    throw new Error('Kunne ikke få login URL');
+                }
+            } catch (error) {
+                loader.style.display = 'none';
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = 'Fejl ved login: ' + error.message;
+            }
+        }
+        
+        // Check if we're returning from Microsoft callback
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            const name = urlParams.get('name');
+            const email = urlParams.get('email');
+            const role = urlParams.get('role');
+            
+            if (token) {
+                // Display user info
+                document.getElementById('userName').textContent = name || 'N/A';
+                document.getElementById('userEmail').textContent = email || 'N/A';
+                document.getElementById('userRole').textContent = role || 'N/A';
+                document.getElementById('userToken').textContent = token;
+                document.getElementById('userInfo').style.display = 'block';
+                document.querySelector('.microsoft-btn').style.display = 'none';
+                
+                // Store token in localStorage
+                localStorage.setItem('access_token', token);
+                localStorage.setItem('user_name', name);
+                localStorage.setItem('user_email', email);
+                localStorage.setItem('user_role', role);
+            }
+        };
+    </script>
+</body>
+</html>

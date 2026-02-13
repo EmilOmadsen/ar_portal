@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A&R Portal – Outreach</title>
+  <style>
+    @font-face {
+      font-family: 'Univers 55';
+      src: url('/static/Univers%2055%20Regular.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    @font-face {
+      font-family: 'Univers 93';
+      src: url('/static/Univers%2093%20Extra%20Black%20Extended%20Regular.otf') format('opentype');
+      font-weight: bold;
+      font-style: normal;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Univers 55', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      display: flex;
+      min-height: 100vh;
+      background: #ffffff;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: url('/static/background.jpg') center center / cover no-repeat;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      left: 0;
+      top: 0;
+    }
+
+    .sidebar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 0;
+    }
+
+    .sidebar > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      font-size: 18px;
+      font-weight: 600;
+      font-family: 'Univers 93', sans-serif;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .sidebar-header img {
+      width: 200px;
+      height: 20px;
+      filter: brightness(0) invert(1);
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 20px 0;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .nav-item:hover {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .nav-item.active {
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border-left: 3px solid #3498db;
+    }
+
+    .nav-item svg {
+      width: 20px;
+      height: 20px;
+      margin-right: 12px;
+    }
+
+    .sidebar-footer {
+      padding: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #3498db;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+    .user-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .user-name {
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Univers 93', sans-serif;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-email {
+      font-size: 11px;
+      color: rgba(255,255,255,0.6);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .logout-btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.3s;
+      margin-top: 12px;
+      width: 100%;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255,255,255,0.15);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-left: 250px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #f5f5f5;
+    }
+
+    .header {
+      background: white;
+      padding: 15px 30px;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-family: 'Univers 93', sans-serif;
+      font-size: 20px;
+      color: #1a1a1a;
+    }
+
+    .compose-btn {
+      background: #0078d4;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 4px;
+      font-family: 'Univers 55', sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .compose-btn:hover {
+      background: #106ebe;
+    }
+
+    .mail-container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* Email Folders Sidebar */
+    .email-sidebar {
+      width: 200px;
+      background: white;
+      border-right: 1px solid #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .folder-section {
+      padding: 10px 0;
+    }
+
+    .folder-section-title {
+      padding: 8px 20px;
+      font-size: 12px;
+      color: #666;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .folder-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #1a1a1a;
+      font-size: 14px;
+    }
+
+    .folder-item:hover {
+      background: #f3f3f3;
+    }
+
+    .folder-item.active {
+      background: #e8f4fd;
+      border-left: 3px solid #0078d4;
+      color: #0078d4;
+      font-weight: 600;
+    }
+
+    .folder-icon {
+      width: 20px;
+      height: 20px;
+      margin-right: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .folder-name {
+      flex: 1;
+    }
+
+    .folder-count {
+      background: #0078d4;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .folder-item:not(.active) .folder-count {
+      background: #999;
+    }
+
+    /* Mail List */
+    .mail-list-container {
+      width: 340px;
+      display: flex;
+      flex-direction: column;
+      background: #fafafa;
+      border-right: 1px solid #e0e0e0;
+    }
+
+    .mail-list-header {
+      background: white;
+      padding: 15px 20px;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .mail-list-title {
+      font-family: 'Univers 93', sans-serif;
+      font-size: 18px;
+      color: #1a1a1a;
+    }
+
+    .mail-list-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      padding: 6px;
+      cursor: pointer;
+      color: #666;
+      border-radius: 4px;
+    }
+
+    .icon-btn:hover {
+      background: #f0f0f0;
+    }
+
+    .mail-list {
+      flex: 1;
+      background: white;
+      overflow-y: auto;
+    }
+
+    .mail-item {
+      padding: 16px 20px;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+      transition: background 0.1s;
+      display: flex;
+      gap: 12px;
+    }
+
+    .mail-item:hover {
+      background: #f9f9f9;
+    }
+
+    .mail-item.active {
+      background: #e8f4fd;
+      border-left: 3px solid #0078d4;
+    }
+
+    .mail-item.unread {
+      background: #f8f8f8;
+    }
+
+    .mail-item.unread .mail-from,
+    .mail-item.unread .mail-subject {
+      font-weight: 600;
+    }
+
+    .mail-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #0078d4;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .mail-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .mail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 4px;
+    }
+
+    .mail-from {
+      font-size: 14px;
+      color: #1a1a1a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mail-time {
+      font-size: 12px;
+      color: #666;
+      white-space: nowrap;
+      margin-left: 10px;
+    }
+
+    .mail-subject {
+      font-size: 13px;
+      color: #333;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mail-preview {
+      font-size: 12px;
+      color: #666;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mail-thread-count {
+      background: #0078d4;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-left: 6px;
+    }
+
+    .mail-detail {
+      flex: 1;
+      background: white;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .mail-detail-header {
+      padding: 20px 30px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .mail-detail-subject {
+      font-family: 'Univers 93', sans-serif;
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+
+    .mail-detail-body {
+      padding: 30px;
+      flex: 1;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #999;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      width: 90%;
+      max-width: 700px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 20px 30px;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .modal-header h2 {
+      font-family: 'Univers 93', sans-serif;
+      font-size: 18px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 20px 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: 'Univers 55', sans-serif;
+    }
+
+    .form-group textarea {
+      min-height: 200px;
+    }
+
+    .modal-footer {
+      padding: 15px 30px;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .action-btn {
+      padding: 8px 16px;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .action-btn.primary {
+      background: #0078d4;
+      color: white;
+      border-color: #0078d4;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <img src="/static/sunday-logo-black.png" alt="Sunday">
+    </div>
+    
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        </svg>
+        Home
+      </a>
+      
+      <a href="/dashboard/discover" class="nav-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        Discover
+      </a>
+      
+      <a href="/dashboard/outreach" class="nav-item active">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+        </svg>
+        Outreach
+      </a>
+      
+      <a href="/dashboard/contracts" class="nav-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        Contracts
+      </a>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <div class="user-avatar">EM</div>
+        <div class="user-info">
+          <div class="user-name" id="userName">Emil Madsen</div>
+          <div class="user-email" id="userEmail">emil@thelabelsunday.com</div>
+        </div>
+      </div>
+      <a href="#" class="logout-btn" onclick="handleLogout(event)">Log Out</a>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="header">
+      <h1>📧 Outreach</h1>
+      <button class="compose-btn" onclick="openCompose()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+        </svg>
+        New Message
+      </button>
+    </div>
+
+    <div class="mail-container">
+      <!-- Email Folders Sidebar -->
+      <div class="email-sidebar">
+        <div class="folder-section">
+          <div class="folder-section-title">Folders</div>
+          <div id="folderList">
+            <div class="loading" style="padding: 20px; text-align: center; color: #999;">Loading folders...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mail List -->
+      <div class="mail-list-container">
+        <div class="mail-list-header">
+          <div class="mail-list-title" id="currentFolderTitle">Inbox</div>
+          <div class="mail-list-actions">
+            <button class="icon-btn" onclick="refreshMailList()" title="Refresh">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 4v6h6M23 20v-6h-6"/>
+                <path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 014.51 15"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="mail-list" id="mailList">
+          <div class="loading">Loading your inbox...</div>
+        </div>
+      </div>
+
+      <!-- Mail Detail -->
+      <div class="mail-detail" id="mailDetail">
+        <div class="empty-state">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
+            <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          <p style="margin-top: 20px; color: #999;">Select an email to read</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compose Modal -->
+  <div class="modal" id="composeModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>New Message</h2>
+        <button class="close-btn" onclick="closeCompose()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="composeForm">
+          <div class="form-group">
+            <label>To</label>
+            <input type="email" id="composeTo" required>
+          </div>
+          <div class="form-group">
+            <label>Subject</label>
+            <input type="text" id="composeSubject" required>
+          </div>
+          <div class="form-group">
+            <label>Message</label>
+            <textarea id="composeBody" required></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="action-btn" onclick="closeCompose()">Cancel</button>
+        <button class="action-btn primary" onclick="sendEmail()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================================
+    // LOGOUT HANDLER
+    // ============================================================
+    function handleLogout(event) {
+      event.preventDefault();
+      // Clear local storage
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('user_name');
+      localStorage.removeItem('user_email');
+      // Redirect to logout endpoint which will clear Microsoft session
+      window.location.href = '/auth/logout';
+    }
+
+    // ============================================================
+    // STATE MANAGEMENT - Production-ready mail state
+    // ============================================================
+    let currentMessages = [];
+    let currentFolder = 'inbox';
+    let allFolders = []; // Store all folders
+    let messageCache = new Map(); // Cache full messages by ID to avoid refetching
+    
+    // Delta query state - enables fast incremental updates
+    // Instead of fetching all messages again, we only fetch changes since last sync
+    const deltaLinks = {
+      inbox: null,
+      sent: null
+    };
+    
+    // Pagination state - handles large mailboxes efficiently
+    const nextLinks = {
+      inbox: null,
+      sent: null
+    };
+    
+    function getToken() {
+      return localStorage.getItem('access_token');
+    }
+    
+    // ============================================================
+    // FOLDERS MANAGEMENT
+    // ============================================================
+    
+    /**
+     * Load all mail folders from Microsoft Graph API
+     */
+    async function loadFolders() {
+      try {
+        const token = getToken();
+        if (!token) return;
+
+        const response = await fetch('/api/mail/folders', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          console.error('Failed to fetch folders');
+          return;
+        }
+
+        const data = await response.json();
+        allFolders = data.value || [];
+        
+        renderFolders(allFolders);
+        
+        // Load inbox by default
+        const inboxFolder = allFolders.find(f => f.displayName === 'Inbox' || f.displayName === 'Indbakke');
+        if (inboxFolder) {
+          currentFolder = inboxFolder.id;
+          loadFolderMessages(currentFolder, inboxFolder.displayName);
+        }
+      } catch (error) {
+        console.error('Error loading folders:', error);
+      }
+    }
+
+    /**
+     * Render folders in sidebar
+     */
+    function renderFolders(folders) {
+      const folderList = document.getElementById('folderList');
+      
+      if (folders.length === 0) {
+        folderList.innerHTML = '<div style="padding: 20px; text-align: center; color: #999;">No folders found</div>';
+        return;
+      }
+
+      // Custom folder order - place Accepted Demoes after Udbakke
+      const folderOrder = {
+        'Indbakke': 1,
+        'Kladder': 2,
+        'Arkiv': 3,
+        'Samtalehistorik': 4,
+        'Sendt post': 5,
+        'Slettet post': 6,
+        'Udbakke': 7,
+        'Accepted Demoes': 8,
+        'Unaccepted Demos': 9,
+        'Uønsket mail': 10
+      };
+
+      // Sort folders based on custom order
+      const sortedFolders = [...folders].sort((a, b) => {
+        const orderA = folderOrder[a.displayName] || 999;
+        const orderB = folderOrder[b.displayName] || 999;
+        if (orderA !== orderB) return orderA - orderB;
+        return a.displayName.localeCompare(b.displayName);
+      });
+
+      // Map folder icons
+      const folderIcons = {
+        'Inbox': '📥',
+        'Indbakke': '📥',
+        'Drafts': '📝',
+        'Kladder': '📝',
+        'Sent Items': '📤',
+        'Sendt post': '📤',
+        'Deleted Items': '🗑️',
+        'Slettet post': '🗑️',
+        'Archive': '📦',
+        'Arkiv': '📦',
+        'Junk Email': '🚫',
+        'Uønsket e-mail': '🚫',
+        'Uønsket mail': '🚫',
+        'Notes': '📝',
+        'Noter': '📝',
+        'Conversation History': '💬',
+        'Samtalehistorik': '💬'
+      };
+
+      folderList.innerHTML = sortedFolders.map((folder, index) => {
+        const icon = folderIcons[folder.displayName] || '📁';
+        const isFirst = index === 0;
+        const countDisplay = folder.unreadItemCount > 0 ? `<div class="folder-count">${folder.unreadItemCount}</div>` : '';
+        
+        return `
+          <div class="folder-item ${isFirst ? 'active' : ''}" onclick="switchToFolder('${folder.id}', '${folder.displayName}')">
+            <div class="folder-icon">${icon}</div>
+            <div class="folder-name">${folder.displayName}</div>
+            ${countDisplay}
+          </div>
+        `;
+      }).join('');
+    }
+
+    /**
+     * Load messages from a specific folder
+     */
+    async function loadFolderMessages(folderId, folderName) {
+      try {
+        const mailList = document.getElementById('mailList');
+        mailList.innerHTML = '<div class="loading">Loading messages...</div>';
+        
+        const token = getToken();
+        if (!token) return;
+
+        const response = await fetch(`/api/mail/folder/${folderId}/messages?top=50&select=minimal`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load messages');
+        }
+
+        const data = await response.json();
+        currentMessages = data.value || [];
+        nextLinks[folderId] = data['@odata.nextLink'] || null;
+        
+        renderMailList(currentMessages);
+        
+        // Update folder title
+        document.getElementById('currentFolderTitle').textContent = folderName;
+      } catch (error) {
+        console.error('Error loading folder messages:', error);
+        document.getElementById('mailList').innerHTML = `
+          <div class="empty-state">
+            <p>Failed to load messages</p>
+            <p style="font-size: 12px;">${error.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    function switchToFolder(folderId, folderName) {
+      currentFolder = folderId;
+      
+      // Update UI
+      document.querySelectorAll('.folder-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      event.target.closest('.folder-item').classList.add('active');
+      
+      // Load folder messages
+      loadFolderMessages(folderId, folderName);
+    }
+    
+    // ============================================================
+    // OPTIMIZED GRAPH API CALLS - Outlook Web App best practices
+    // ============================================================
+    
+    /**
+     * Fetch messages with optimized query parameters
+     * Only fetches minimal fields needed for list view (fast first paint)
+     * Uses backend API which handles Microsoft token and Graph API calls
+     */
+    async function fetchMessagesOptimized(endpoint, top = 20) {
+      const token = getToken();
+      if (!token) {
+        window.location.href = '/';
+        return null;
+      }
+      
+      // Call backend API with top parameter
+      // Backend will handle $select, $orderby optimization
+      const url = `${endpoint}?top=${top}&select=minimal`;
+      
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.status === 401) {
+        alert('Session expired. Please login again.');
+        window.location.href = '/';
+        return null;
+      }
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch: ${response.statusText}`);
+      }
+      
+      return await response.json();
+    }
+    
+    /**
+     * Fetch delta changes - TODO: Implement in backend for production
+     * This is how Outlook Web App achieves near-instant refresh
+     */
+    async function fetchDeltaChanges(folder) {
+      // For now, just do a regular fetch
+      // Delta queries should be implemented in backend for proper token handling
+      return null;
+    }
+    
+    /**
+     * Fetch full message details - only when user clicks to view
+     * Includes body and attachments (heavy data)
+     */
+    async function fetchFullMessage(messageId) {
+      // Check cache first - avoid redundant network calls
+      if (messageCache.has(messageId)) {
+        return messageCache.get(messageId);
+      }
+      
+      const token = getToken();
+      if (!token) return null;
+      
+      // Use backend API endpoint to fetch full message
+      const url = `/api/mail/message/${messageId}`;
+      
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch message details');
+      }
+      
+      const message = await response.json();
+      
+      // Cache the full message
+      messageCache.set(messageId, message);
+      
+      return message;
+    }
+    
+    /**
+     * Load more messages using pagination
+     * Triggered when user scrolls to bottom
+     */
+    async function loadMoreMessages(folder) {
+      const nextLink = nextLinks[folder];
+      if (!nextLink) return; // No more pages
+      
+      const token = getToken();
+      if (!token) return;
+      
+      const response = await fetch(nextLink, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) return;
+      
+      const data = await response.json();
+      
+      // Append new messages
+      currentMessages = [...currentMessages, ...(data.value || [])];
+      
+      // Update pagination link
+      nextLinks[folder] = data['@odata.nextLink'] || null;
+      
+      // Re-render list
+      renderMailList(currentMessages);
+    }
+
+    function switchFolder(folder) {
+      currentFolder = folder;
+      
+      // Update UI
+      document.querySelectorAll('.folder-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      event.target.closest('.folder-item').classList.add('active');
+      
+      // Update title
+      const titles = {
+        'inbox': 'Inbox',
+        'drafts': 'Drafts',
+        'sent': 'Sent Items',
+        'deleted': 'Deleted Items',
+        'archive': 'Archive',
+        'flagged': 'Flagged',
+        'important': 'Important'
+      };
+      document.getElementById('currentFolderTitle').textContent = titles[folder] || folder;
+      
+      // Load appropriate content
+      switch(folder) {
+        case 'inbox':
+          loadInbox();
+          break;
+        case 'sent':
+          loadSent();
+          break;
+        case 'drafts':
+          loadDrafts();
+          break;
+        default:
+          document.getElementById('mailList').innerHTML = `
+            <div class="empty-state">
+              <p>This folder is not yet implemented</p>
+              <p style="font-size: 12px; color: #999; margin-top: 10px;">Coming soon...</p>
+            </div>
+          `;
+      }
+    }
+
+    function refreshMailList() {
+      // Reload current folder
+      if (currentFolder === 'inbox') {
+        loadInbox(false);
+      } else {
+        switchFolder(currentFolder);
+      }
+    }
+    
+    // ============================================================
+    // INFINITE SCROLL - Load more messages automatically
+    // ============================================================
+    
+    // Add scroll listener for pagination
+    document.addEventListener('DOMContentLoaded', () => {
+      // Load folders on page load
+      loadFolders();
+      
+      const mailListElement = document.querySelector('.mail-list');
+      if (mailListElement) {
+        mailListElement.addEventListener('scroll', () => {
+          // Check if scrolled near bottom
+          if (mailListElement.scrollHeight - mailListElement.scrollTop <= mailListElement.clientHeight + 100) {
+            // Load more if available
+            if (nextLinks[currentFolder]) {
+              loadMoreMessages(currentFolder);
+            }
+          }
+        });
+      }
+      
+      // Auto-refresh current folder every 60 seconds
+      setInterval(() => {
+        if (currentFolder && allFolders.length > 0) {
+          const folder = allFolders.find(f => f.id === currentFolder);
+          if (folder) {
+            console.log('Auto-refreshing folder:', folder.displayName);
+            loadFolderMessages(currentFolder, folder.displayName);
+          }
+        }
+      }, 60000); // 60 seconds
+    });
+
+    async function switchMailbox() {
+      currentFolder = document.getElementById('mailboxSelect').value;
+      if (currentFolder === 'inbox') {
+        loadInbox();
+      } else {
+        loadSent();
+      }
+    }
+
+    /**
+     * Load inbox - optimized with delta queries for fast refresh
+     * First load: Fetches 20 messages with minimal fields
+     * Subsequent loads: Only fetches changes (delta)
+     */
+    async function loadInbox(useDelta = true) {
+      try {
+        const mailList = document.getElementById('mailList');
+        
+        // Show loading state (fast perceived performance)
+        mailList.innerHTML = '<div class="loading">Loading inbox...</div>';
+        
+        let data;
+        
+        // For now, use direct API calls (delta queries can be added to backend later)
+        console.log('Loading inbox via backend API');
+        data = await fetchMessagesOptimized('/api/mail/inbox', 50);
+        
+        if (!data) return;
+        
+        // Remove delta link handling for now (needs backend support)
+        // TODO: Implement delta queries in backend
+        
+        // Store pagination link if more messages available
+        nextLinks.inbox = data['@odata.nextLink'] || null;
+        
+        // Simple replace - delta merging can be added when backend supports it
+        currentMessages = data.value || [];
+        
+        renderMailList(currentMessages);
+        
+        // Update inbox count
+        document.getElementById('inboxCount').textContent = currentMessages.length;
+        
+      } catch (error) {
+        console.error('Error loading inbox:', error);
+        document.getElementById('mailList').innerHTML = `
+          <div class="empty-state">
+            <p>Failed to load inbox</p>
+            <p style="font-size: 12px;">${error.message}</p>
+          </div>
+        `;
+      }
+    }
+    
+    /**
+     * Merge delta changes into existing message list
+     * Handles new messages, updates, and deletions
+     */
+    function mergeDeltaChanges(deltaMessages) {
+      deltaMessages.forEach(deltaMsg => {
+        const index = currentMessages.findIndex(m => m.id === deltaMsg.id);
+        
+        if (deltaMsg['@removed']) {
+          // Message was deleted
+          if (index !== -1) {
+            currentMessages.splice(index, 1);
+          }
+        } else if (index !== -1) {
+          // Message was updated
+          currentMessages[index] = deltaMsg;
+        } else {
+          // New message - add to top
+          currentMessages.unshift(deltaMsg);
+        }
+      });
+      
+      // Re-sort by received date
+      currentMessages.sort((a, b) => {
+        const dateA = new Date(a.receivedDateTime || a.sentDateTime);
+        const dateB = new Date(b.receivedDateTime || b.sentDateTime);
+        return dateB - dateA; // Descending
+      });
+    }
+
+    async function loadDrafts() {
+      document.getElementById('mailList').innerHTML = `
+        <div class="empty-state">
+          <p>No drafts</p>
+          <p style="font-size: 12px; color: #999; margin-top: 10px;">Draft messages will appear here</p>
+        </div>
+      `;
+    }
+
+    function getInitials(name) {
+      if (!name) return '?';
+      const parts = name.trim().split(' ');
+      if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+      return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+    }
+
+    function getAvatarColor(name) {
+      const colors = ['#0078d4', '#8764b8', '#00b7c3', '#8cbd18', '#ffb900', '#d83b01', '#e81123'];
+      if (!name) return colors[0];
+      let hash = 0;
+      for (let i = 0; i < name.length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      return colors[Math.abs(hash) % colors.length];
+    }
+
+    function formatTime(dateString) {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+      const diffDays = Math.floor(diffMs / 86400000);
+
+      if (diffMins < 1) return 'Just now';
+      if (diffMins < 60) return `${diffMins}m`;
+      if (diffHours < 24) return `${diffHours}h`;
+      if (diffDays < 7) return `${diffDays}d`;
+      
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    function renderMailList(messages) {
+      const mailList = document.getElementById('mailList');
+      
+      if (messages.length === 0) {
+        mailList.innerHTML = `
+          <div class="empty-state">
+            <p>No messages</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Group messages by conversation
+      const conversations = {};
+      messages.forEach((msg, index) => {
+        const convId = msg.conversationId;
+        if (!conversations[convId]) {
+          conversations[convId] = [];
+        }
+        conversations[convId].push({msg, index});
+      });
+
+      // Render conversations with avatars and better formatting
+      mailList.innerHTML = Object.entries(conversations).map(([convId, items]) => {
+        const latestMsg = items[0].msg;
+        const count = items.length;
+        const threadBadge = count > 1 ? `<span class="mail-thread-count">${count}</span>` : '';
+        const senderName = latestMsg.from?.emailAddress?.name || 'Unknown';
+        const initials = getInitials(senderName);
+        const avatarColor = getAvatarColor(senderName);
+        const timeStr = formatTime(latestMsg.receivedDateTime || latestMsg.sentDateTime);
+        const isUnread = latestMsg.isRead === false ? 'unread' : '';
+        
+        return `
+          <div class="mail-item ${isUnread}" onclick="showConversation('${convId}')">
+            <div class="mail-avatar" style="background: ${avatarColor};">${initials}</div>
+            <div class="mail-content">
+              <div class="mail-header">
+                <div class="mail-from">${senderName}${threadBadge}</div>
+                <div class="mail-time">${timeStr}</div>
+              </div>
+              <div class="mail-subject">${latestMsg.subject || '(No subject)'}</div>
+              <div class="mail-preview">${latestMsg.bodyPreview || ''}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function showMessage(index) {
+      const msg = currentMessages[index];
+      showConversation(msg.conversationId);
+    }
+
+    /**
+     * Show conversation - optimized to fetch full message only when needed
+     * List view has minimal data, full message fetched on demand
+     */
+    async function showConversation(conversationId) {
+      const mailDetail = document.getElementById('mailDetail');
+      
+      // Show loading state immediately (fast perceived performance)
+      mailDetail.innerHTML = `
+        <div class="loading" style="padding: 40px; text-align: center;">
+          <p>Loading message...</p>
+        </div>
+      `;
+      
+      // Find all messages with this conversationId from list view (minimal data)
+      const threadMessages = currentMessages.filter(m => m.conversationId === conversationId);
+      
+      if (threadMessages.length === 0) {
+        mailDetail.innerHTML = '<div class="empty-state"><p>No messages found</p></div>';
+        return;
+      }
+      
+      try {
+        // Fetch full message details for each message in thread
+        // This is where we get body and attachments (only when needed)
+        const fullMessages = await Promise.all(
+          threadMessages.map(msg => fetchFullMessage(msg.id))
+        );
+        
+        // Sort by date
+        fullMessages.sort((a, b) => {
+          const dateA = new Date(a.receivedDateTime || a.sentDateTime);
+          const dateB = new Date(b.receivedDateTime || b.sentDateTime);
+          return dateA - dateB;
+        });
+        
+        const latestMsg = fullMessages[fullMessages.length - 1];
+        const isInbox = currentFolder === 'inbox';
+        
+        // Render full message with body and attachments
+        mailDetail.innerHTML = `
+          <div class="mail-detail-header">
+            <div class="mail-detail-subject">${latestMsg.subject || '(No subject)'}</div>
+            <div style="color: #666; margin-top: 5px;">${fullMessages.length} message${fullMessages.length > 1 ? 's' : ''} in this thread</div>
+            ${isInbox ? `<div style="margin-top: 10px;"><button class="action-btn primary" onclick="replyToConversation('${conversationId}')">↩️ Reply</button></div>` : ''}
+          </div>
+          <div class="mail-detail-body" style="max-height: calc(100vh - 250px); overflow-y: auto;">
+            ${fullMessages.map((msg, idx) => {
+            const dateField = msg.receivedDateTime || msg.sentDateTime;
+            let bodyContent = msg.body?.content || 'No content';
+            
+            // Handle inline images - replace CID references with base64 data
+            if (msg.body?.contentType === 'html' && msg.attachments) {
+              msg.attachments.forEach(att => {
+                if (att.contentId && att.contentBytes) {
+                  const cid = att.contentId.replace(/^<|>$/g, '');
+                  const dataUrl = `data:${att.contentType};base64,${att.contentBytes}`;
+                  bodyContent = bodyContent.replace(new RegExp(`cid:${cid}`, 'gi'), dataUrl);
+                }
+              });
+            }
+            
+            // Use iframe for HTML content to properly render images and styles
+            let displayContent;
+            if (msg.body?.contentType === 'html') {
+              // Create a full HTML document with proper base and meta tags
+              const htmlContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                  <meta charset="UTF-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                  <meta name="referrer" content="no-referrer">
+                  <style>
+                    body { 
+                      margin: 0; 
+                      padding: 10px; 
+                      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+                      word-wrap: break-word;
+                    }
+                    img { 
+                      max-width: 100% !important; 
+                      height: auto !important;
+                      display: inline-block;
+                    }
+                    table { max-width: 100%; }
+                  </style>
+                </head>
+                <body>${bodyContent}</body>
+                </html>
+              `;
+              
+              // Create a blob URL for better external resource loading
+              const blob = new Blob([htmlContent], { type: 'text/html' });
+              const blobUrl = URL.createObjectURL(blob);
+              const iframeId = `email-frame-${idx}-${Date.now()}`;
+              
+              displayContent = `<iframe id="${iframeId}" src="${blobUrl}" sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="no-referrer" style="width: 100%; min-height: 400px; border: none; background: white;" onload="setTimeout(()=>{const f=document.getElementById('${iframeId}');if(f&&f.contentWindow&&f.contentWindow.document.body)f.style.height=Math.max(400,f.contentWindow.document.body.scrollHeight+20)+'px';},200)"></iframe>`;
+            } else {
+              displayContent = `<pre style="white-space: pre-wrap; font-family: inherit;">${bodyContent.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>`;
+            }
+            
+            // Display image attachments (non-inline)
+            let attachmentsHtml = '';
+            if (msg.attachments && msg.attachments.length > 0) {
+              const imageAttachments = msg.attachments.filter(att => 
+                !att.contentId && // Not an inline image
+                att.contentType && 
+                att.contentType.startsWith('image/') &&
+                att.contentBytes
+              );
+              
+              if (imageAttachments.length > 0) {
+                attachmentsHtml = `
+                  <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #f0f0f0;">
+                    <div style="font-size: 12px; color: #666; margin-bottom: 10px; font-weight: 600;">📎 Attachments (${imageAttachments.length})</div>
+                    ${imageAttachments.map(att => {
+                      const dataUrl = `data:${att.contentType};base64,${att.contentBytes}`;
+                      return `
+                        <div style="margin-bottom: 10px;">
+                          <div style="font-size: 12px; color: #666; margin-bottom: 5px;">${att.name}</div>
+                          <img src="${dataUrl}" alt="${att.name}" style="max-width: 100%; height: auto; border: 1px solid #e0e0e0; border-radius: 4px;" />
+                        </div>
+                      `;
+                    }).join('')}
+                  </div>
+                `;
+              }
+            }
+            
+            return `
+              <div style="border-bottom: 1px solid #e0e0e0; padding: 15px 0; ${idx === fullMessages.length - 1 ? 'border-bottom: none;' : ''}">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                  <strong>${msg.from?.emailAddress?.name || 'Unknown'}</strong>
+                  <span style="color: #666; font-size: 12px;">${new Date(dateField).toLocaleString()}</span>
+                </div>
+                <div style="color: #666; font-size: 12px; margin-bottom: 8px;">To: ${msg.toRecipients?.map(r => r.emailAddress.name).join(', ') || 'Unknown'}</div>
+                <div style="margin-top: 10px;">${displayContent}</div>
+                ${attachmentsHtml}
+              </div>
+            `;
+          }).join('')}
+          </div>
+        `;
+      } catch (error) {
+        console.error('Error fetching full message:', error);
+        mailDetail.innerHTML = `
+          <div class="empty-state">
+            <p>Failed to load message</p>
+            <p style="font-size: 12px; color: #999;">${error.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    function openCompose() {
+      document.getElementById('composeModal').classList.add('active');
+      document.getElementById('composeForm').reset();
+    }
+
+    function closeCompose() {
+      document.getElementById('composeModal').classList.remove('active');
+    }
+
+    /**
+     * Load sent items - optimized for fast loading
+     */
+    async function loadSent() {
+      try {
+        const mailList = document.getElementById('mailList');
+        mailList.innerHTML = '<div class="loading">Loading sent items...</div>';
+        
+        const data = await fetchMessagesOptimized('/api/mail/sent', 50);
+        
+        if (!data) return;
+        
+        // Store pagination link
+        nextLinks.sent = data['@odata.nextLink'] || null;
+        
+        currentMessages = data.value || [];
+        renderMailList(currentMessages);
+        
+      } catch (error) {
+        console.error('Error loading sent items:', error);
+        document.getElementById('mailList').innerHTML = `
+          <div class="empty-state">
+            <p>Failed to load sent emails</p>
+            <p style="font-size: 12px;">${error.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    async function replyToConversation(conversationId) {
+      // Find the latest message in the thread
+      const threadMessages = currentMessages.filter(m => m.conversationId === conversationId);
+      if (threadMessages.length === 0) return;
+      
+      threadMessages.sort((a, b) => {
+        const dateA = new Date(a.receivedDateTime || a.sentDateTime);
+        const dateB = new Date(b.receivedDateTime || b.sentDateTime);
+        return dateB - dateA; // Descending to get latest first
+      });
+      
+      const latestMsg = threadMessages[0];
+      document.getElementById('composeTo').value = latestMsg.from?.emailAddress?.address || '';
+      document.getElementById('composeSubject').value = 'Re: ' + (latestMsg.subject || '').replace(/^Re: /, '');
+      document.getElementById('composeBody').value = '';
+      openCompose();
+    }
+
+    function replyToMessage(index) {
+      const msg = currentMessages[index];
+      replyToConversation(msg.conversationId);
+    }
+
+    async function sendEmail() {
+      const to = document.getElementById('composeTo').value;
+      const subject = document.getElementById('composeSubject').value;
+      const body = document.getElementById('composeBody').value;
+
+      try {
+        const token = getToken();
+        const response = await fetch('/api/mail/send', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            subject,
+            body: {
+              contentType: 'Text',
+              content: body
+            },
+            toRecipients: [{
+              emailAddress: { address: to }
+            }]
+          })
+        });
+
+        if (!response.ok) throw new Error('Failed to send');
+        
+        alert('Email sent!');
+        closeCompose();
+      } catch (error) {
+        alert('Failed to send: ' + error.message);
+      }
+    }
+
+    loadInbox();
+  </script>
+</body>
+</html>

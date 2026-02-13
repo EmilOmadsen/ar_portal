@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song Analytics - A&R Portal</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    
+    <style>
+        @font-face {
+            font-family: 'Univers 55';
+            src: url('/static/Univers%2055%20Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Univers 93';
+            src: url('/static/Univers%2093%20Extra%20Black%20Extended%20Regular.otf') format('opentype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Univers 55', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #ffffff;
+            color: #2a2a2a;
+            line-height: 1.6;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .back-button {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            color: #e0e0e0;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: 'Univers 55', sans-serif;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-button:hover {
+            background: #2a2a2a;
+            border-color: #3a3a3a;
+        }
+
+        .song-info h1 {
+            font-family: 'Univers 93', sans-serif;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .song-info p {
+            color: #888;
+            font-size: 16px;
+        }
+
+        .export-button {
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            color: #2a2a2a;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: 'Univers 55', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .export-button:hover {
+            background: #e0e0e0;
+            border-color: #ccc;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-button {
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            color: #888;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: 'Univers 55', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .filter-button:hover {
+            border-color: #ccc;
+            color: #2a2a2a;
+        }
+
+        .filter-button.active {
+            background: #2a2a2a;
+            color: #ffffff;
+            border-color: #2a2a2a;
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: #ffffff;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s;
+        }
+
+        .metric-card.tiktok {
+            border-color: #00f2ea;
+        }
+
+        .metric-card.spotify {
+            border-color: #1DB954;
+        }
+
+        .metric-card.inactive {
+            opacity: 0.5;
+            border-color: #e0e0e0;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .metric-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #888;
+            font-family: 'Univers 55', sans-serif;
+        }
+
+        .metric-checkbox {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .metric-icon {
+            font-size: 24px;
+        }
+
+        .metric-value {
+            font-family: 'Univers 93', sans-serif;
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .metric-change {
+            font-size: 14px;
+            color: #1DB954;
+        }
+
+        .metric-change.negative {
+            color: #ff4444;
+        }
+
+        /* Charts Section */
+        .charts-section {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .chart-title {
+            font-family: 'Univers 93', sans-serif;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.tiktok {
+            background: #00f2ea;
+        }
+
+        .legend-dot.spotify {
+            background: #1DB954;
+        }
+
+        .chart-container {
+            height: 400px;
+            position: relative;
+        }
+
+        /* Loading/Error States */
+        .loading, .error {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .spinner {
+            border: 3px solid #e0e0e0;
+            border-top: 3px solid #00f2ea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            color: #ff4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <a href="/dashboard/discover" class="back-button">← Back to Discovery</a>
+            
+            <div class="song-info">
+                <h1 id="songTitle">Loading...</h1>
+                <p id="songArtist">-</p>
+            </div>
+
+            <button class="export-button" onclick="exportData()">
+                📊 Export CSV
+            </button>
+        </div>
+
+        <!-- Time Period Filters -->
+        <div class="filters">
+            <button class="filter-button" disabled>+ Add Metrics</button>
+            <button class="filter-button" data-days="7">Last 7 Days</button>
+            <button class="filter-button" data-days="14">Last 14 Days</button>
+            <button class="filter-button" data-days="30">Last 30 Days</button>
+            <button class="filter-button" data-days="90">Last 3 Months</button>
+            <button class="filter-button active" data-days="all">All Time</button>
+            <button class="filter-button" disabled>📅</button>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="metrics-grid">
+            <div class="metric-card tiktok">
+                <div class="metric-header">
+                    <div class="metric-title">
+                        <input type="checkbox" class="metric-checkbox" checked>
+                        <span>TikTok Creates</span>
+                    </div>
+                    <span class="metric-icon">🎵</span>
+                </div>
+                <div class="metric-value" id="tiktokTotal">-</div>
+                <div class="metric-change" id="tiktokChange">-</div>
+            </div>
+
+            <div class="metric-card spotify">
+                <div class="metric-header">
+                    <div class="metric-title">
+                        <input type="checkbox" class="metric-checkbox" checked>
+                        <span>Spotify Streams</span>
+                    </div>
+                    <span class="metric-icon">🎧</span>
+                </div>
+                <div class="metric-value" id="spotifyTotal">-</div>
+                <div class="metric-change" id="spotifyChange">-</div>
+            </div>
+
+            <div class="metric-card inactive">
+                <div class="metric-header">
+                    <div class="metric-title">
+                        <input type="checkbox" class="metric-checkbox">
+                        <span>YouTube [Beta]</span>
+                    </div>
+                    <span class="metric-icon">▶️</span>
+                </div>
+                <div class="metric-value">-</div>
+                <div class="metric-change">Coming soon</div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-section">
+            <div class="chart-header">
+                <div class="chart-title">Performance Timeline</div>
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <div class="legend-dot tiktok"></div>
+                        <span>TikTok Creates</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot spotify"></div>
+                        <span>Spotify Streams</span>
+                    </div>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="timelineChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Loading/Error States -->
+        <div id="loadingState" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Loading analytics data...</p>
+        </div>
+
+        <div id="errorState" class="error" style="display: none;">
+            <p id="errorMessage">Failed to load analytics data</p>
+        </div>
+    </div>
+
+    <script>
+        let currentChart = null;
+        let analyticsData = null;
+        let currentDays = 'all';
+
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const songId = urlParams.get('id');
+        const urlToken = urlParams.get('token');
+        const localToken = localStorage.getItem('token');
+        const token = urlToken || localToken;
+        const title = urlParams.get('title');
+        const artist = urlParams.get('artist');
+        const tiktokSoundId = urlParams.get('tiktok_sound_id');
+        const spotifyId = urlParams.get('spotify_id');
+
+        console.log('📊 Analytics page loaded:', { 
+            songId, 
+            urlTokenExists: !!urlToken, 
+            localTokenExists: !!localToken,
+            tokenLength: token ? token.length : 0,
+            tokenPreview: token ? token.substring(0, 20) + '...' : 'none',
+            title, 
+            artist 
+        });
+
+        // Save token to localStorage if provided in URL
+        if (urlToken) {
+            console.log('💾 Saving token from URL to localStorage');
+            localStorage.setItem('token', urlToken);
+        }
+
+        // Set song info
+        if (title) document.getElementById('songTitle').textContent = title;
+        if (artist) document.getElementById('songArtist').textContent = artist;
+
+        // Time period filter buttons
+        document.querySelectorAll('.filter-button[data-days]').forEach(button => {
+            button.addEventListener('click', () => {
+                console.log('🔘 Filter clicked:', button.dataset.days);
+                document.querySelectorAll('.filter-button[data-days]').forEach(b => b.classList.remove('active'));
+                button.classList.add('active');
+                currentDays = button.dataset.days;
+                console.log('📅 Current days set to:', currentDays);
+                loadAnalytics();
+            });
+        });
+
+        // Load analytics data
+        async function loadAnalytics() {
+            if (!songId) {
+                showError('Missing song ID');
+                return;
+            }
+
+            if (!token) {
+                showError('Missing authentication token. Please log in again.');
+                return;
+            }
+
+            showLoading();
+
+            try {
+                // Build query parameters - max days is 90 per API constraint
+                const params = new URLSearchParams({
+                    days: currentDays === 'all' ? '90' : currentDays
+                });
+
+                if (tiktokSoundId) params.append('tiktok_sound_id', tiktokSoundId);
+                if (spotifyId) params.append('spotify_id', spotifyId);
+                if (title) params.append('title', title);
+                if (artist) params.append('artist', artist);
+
+                const apiUrl = `/api/discovery/tiktok-trending/${songId}/analytics?${params.toString()}`;
+                console.log('🌐 Fetching:', apiUrl);
+
+                const response = await fetch(apiUrl, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('✅ Response:', response.status);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('❌ Error response:', errorText);
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                analyticsData = await response.json();
+                console.log('📦 Data received:', analyticsData);
+
+                hideLoading();
+                displayAnalytics(analyticsData);
+
+            } catch (error) {
+                console.error('❌ Error:', error);
+                showError(error.message);
+            }
+        }
+
+        function displayAnalytics(data) {
+            if (!data.totals) {
+                showError('No data available');
+                return;
+            }
+
+            // Update totals
+            document.getElementById('tiktokTotal').textContent = formatNumber(data.totals.tiktok_total_videos || data.totals.tiktok_total || 0);
+            
+            // For Spotify, calculate total from timeline (cumulative streams)
+            const spotifyTimeline = data.timelines?.spotify_streams || [];
+            const spotifyTotal = spotifyTimeline.length > 0 ? spotifyTimeline[spotifyTimeline.length - 1].value : 0;
+            document.getElementById('spotifyTotal').textContent = formatNumber(spotifyTotal);
+
+            // Calculate changes
+            const tiktokChange = calculateChange(data.timelines?.tiktok_creates || []);
+            
+            // For Spotify, show the latest daily streams instead of change
+            const spotifyChange = spotifyTimeline.length > 0 ? spotifyTimeline[spotifyTimeline.length - 1].value - (spotifyTimeline.length > 1 ? spotifyTimeline[spotifyTimeline.length - 2].value : 0) : 0;
+
+            if (tiktokChange !== null) {
+                const el = document.getElementById('tiktokChange');
+                el.textContent = `${tiktokChange > 0 ? '+' : ''}${formatNumber(tiktokChange)}`;
+                el.className = tiktokChange >= 0 ? 'metric-change' : 'metric-change negative';
+            }
+
+            if (spotifyChange !== null) {
+                const el = document.getElementById('spotifyChange');
+                el.textContent = `${formatNumber(spotifyChange)} today`;
+                el.className = 'metric-change';
+            }
+
+            // Render chart
+            renderTimeline(data.timelines);
+        }
+
+        function renderTimeline(timelines) {
+            const ctx = document.getElementById('timelineChart');
+            
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            const tiktokData = timelines?.tiktok_creates || [];
+            const spotifyData = timelines?.spotify_streams || [];
+
+            console.log('📊 Chart data:', { tiktok: tiktokData.length, spotify: spotifyData.length });
+
+            // Get all unique dates
+            const allDates = [...new Set([
+                ...tiktokData.map(d => d.date),
+                ...spotifyData.map(d => d.date)
+            ])].sort();
+
+            // Create datasets
+            const datasets = [];
+
+            if (tiktokData.length > 0) {
+                datasets.push({
+                    label: 'TikTok Creates',
+                    data: allDates.map(date => {
+                        const point = tiktokData.find(d => d.date === date);
+                        return point ? point.value : null;
+                    }),
+                    borderColor: '#00f2ea',
+                    backgroundColor: 'rgba(0, 242, 234, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    yAxisID: 'y'
+                });
+            }
+
+            if (spotifyData.length > 0) {
+                datasets.push({
+                    label: 'Spotify Streams',
+                    data: allDates.map(date => {
+                        const point = spotifyData.find(d => d.date === date);
+                        return point ? point.value : null;
+                    }),
+                    borderColor: '#1DB954',
+                    backgroundColor: 'rgba(29, 185, 84, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    yAxisID: 'y1'
+                });
+            }
+
+            currentChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: allDates,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#ffffff',
+                            titleColor: '#2a2a2a',
+                            bodyColor: '#2a2a2a',
+                            borderColor: '#e0e0e0',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: true,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + formatNumber(context.parsed.y);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: '#e0e0e0',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#666',
+                                maxTicksLimit: 10,
+                                font: {
+                                    family: 'Univers 55'
+                                }
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            beginAtZero: true,
+                            min: 0,
+                            grid: {
+                                color: '#e0e0e0',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#00f2ea',
+                                font: {
+                                    family: 'Univers 55'
+                                },
+                                callback: function(value) {
+                                    return formatNumber(value);
+                                }
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            position: 'right',
+                            beginAtZero: true,
+                            min: 0,
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#1DB954',
+                                font: {
+                                    family: 'Univers 55'
+                                },
+                                callback: function(value) {
+                                    return formatNumber(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function calculateChange(timeline) {
+            if (!timeline || timeline.length < 2) return null;
+            const latest = timeline[timeline.length - 1]?.value || 0;
+            const previous = timeline[timeline.length - 2]?.value || 0;
+            return latest - previous;
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toLocaleString();
+        }
+
+        function showLoading() {
+            document.getElementById('loadingState').style.display = 'block';
+            document.getElementById('errorState').style.display = 'none';
+            document.querySelector('.metrics-grid').style.opacity = '0.5';
+            document.querySelector('.charts-section').style.opacity = '0.5';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingState').style.display = 'none';
+            document.querySelector('.metrics-grid').style.opacity = '1';
+            document.querySelector('.charts-section').style.opacity = '1';
+        }
+
+        function showError(message) {
+            document.getElementById('errorState').style.display = 'block';
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('loadingState').style.display = 'none';
+            document.querySelector('.metrics-grid').style.opacity = '0.5';
+            document.querySelector('.charts-section').style.opacity = '0.5';
+        }
+
+        function exportData() {
+            if (!analyticsData) {
+                alert('No data to export');
+                return;
+            }
+
+            let csv = 'Date,TikTok Creates,Spotify Streams\n';
+            const tiktokData = analyticsData.timelines?.tiktok_creates || [];
+            const spotifyData = analyticsData.timelines?.spotify_streams || [];
+            const allDates = [...new Set([
+                ...tiktokData.map(d => d.date),
+                ...spotifyData.map(d => d.date)
+            ])].sort();
+
+            allDates.forEach(date => {
+                const tiktok = tiktokData.find(d => d.date === date)?.value || 0;
+                const spotify = spotifyData.find(d => d.date === date)?.value || 0;
+                csv += `${date},${tiktok},${spotify}\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${title || 'song'}_analytics_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Initial load
+        loadAnalytics();
+    </script>
+</body>
+</html>

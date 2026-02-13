@@ -1,0 +1,1406 @@
+{
+  "total_songs": 500,
+  "unique_labels": 350,
+  "labels": [
+    {
+      "name": "UMG Recordings",
+      "count": 11
+    },
+    {
+      "name": "Columbia Records, a Division of Sony Music Entertainment",
+      "count": 8
+    },
+    {
+      "name": "Atlantic Recording Corporation",
+      "count": 7
+    },
+    {
+      "name": "Super Cassettes Industries Private Limited",
+      "count": 5
+    },
+    {
+      "name": "Epic Records, a division of Sony Music Entertainment",
+      "count": 5
+    },
+    {
+      "name": "Sony Music Entertainment UK Limited",
+      "count": 4
+    },
+    {
+      "name": "Zee Music Company",
+      "count": 4
+    },
+    {
+      "name": "Darkroom/Interscope Records",
+      "count": 3
+    },
+    {
+      "name": "Sony Music Entertainment India Pvt.",
+      "count": 3
+    },
+    {
+      "name": "Sony Music Entertainment US Latin",
+      "count": 3
+    },
+    {
+      "name": "Geffen Records",
+      "count": 3
+    },
+    {
+      "name": "Ishtar Music Pvt.",
+      "count": 3
+    },
+    {
+      "name": "RCA Records, a division of Sony Music Entertainment",
+      "count": 3
+    },
+    {
+      "name": "Sharabi Films",
+      "count": 2
+    },
+    {
+      "name": "Sony Music Entertainment",
+      "count": 2
+    },
+    {
+      "name": "Sweven Records",
+      "count": 2
+    },
+    {
+      "name": "Serhat Durmus under exclusive license to Amuseio AB",
+      "count": 2
+    },
+    {
+      "name": "Monkey Puzzle Records, under exclusive license to RCA Records",
+      "count": 2
+    },
+    {
+      "name": "Taylor Swift",
+      "count": 2
+    },
+    {
+      "name": "FAX Records, under exclusive license to Epic Records, a division of Sony Music Entertainment",
+      "count": 2
+    },
+    {
+      "name": "Kemosabe Records/RCA Records",
+      "count": 2
+    },
+    {
+      "name": "Young Money Entertainment/Cash Money Records",
+      "count": 2
+    },
+    {
+      "name": "Warner Music Latina",
+      "count": 2
+    },
+    {
+      "name": "Universal Records, a Division of UMG Recordings, Inc. and SRC Records",
+      "count": 2
+    },
+    {
+      "name": "Warner Music UK Limited",
+      "count": 2
+    },
+    {
+      "name": "Disruptor Records/Columbia Records",
+      "count": 2
+    },
+    {
+      "name": "Legacy ID",
+      "count": 2
+    },
+    {
+      "name": "Interscope Records",
+      "count": 2
+    },
+    {
+      "name": "SpinninRecords.com",
+      "count": 2
+    },
+    {
+      "name": "Capitol Records",
+      "count": 2
+    },
+    {
+      "name": "Tips Music Limited Under Exclusive License to Warner Music",
+      "count": 2
+    },
+    {
+      "name": "XL Recordings",
+      "count": 2
+    },
+    {
+      "name": "Atlantic Recording Corporation for the United States and WEA International Inc. for the world outside of the United States",
+      "count": 2
+    },
+    {
+      "name": "Def Jam Recordings, a division of UMG Recordings",
+      "count": 2
+    },
+    {
+      "name": "Panty Droppaz League",
+      "count": 2
+    },
+    {
+      "name": "Top Dawg Entertainment, LLC, under exclusive license to UMG Recordings",
+      "count": 2
+    },
+    {
+      "name": "Jendex Records",
+      "count": 1
+    },
+    {
+      "name": "Gracie Abrams, under exclusive license to Interscope Records, a division of UMG Recordings",
+      "count": 1
+    },
+    {
+      "name": "Pointhits / WZ Beat",
+      "count": 1
+    },
+    {
+      "name": "Archer Music Production",
+      "count": 1
+    },
+    {
+      "name": "PONCHET",
+      "count": 1
+    },
+    {
+      "name": "FloyyMenor under exclusive license to UnitedMasters",
+      "count": 1
+    },
+    {
+      "name": "Lotus Music, under exclusive license to OVOKACHO",
+      "count": 1
+    },
+    {
+      "name": "Asylum Records UK, a division of Atlantic Records UK, a Warner Music Group company",
+      "count": 1
+    },
+    {
+      "name": "Kevin MacLeod",
+      "count": 1
+    },
+    {
+      "name": "B1 Recordings",
+      "count": 1
+    },
+    {
+      "name": "ROSÉ and Bruno Mars under exclusive license to Atlantic Recording Corporation for the World excluding Korea",
+      "count": 1
+    },
+    {
+      "name": "Aegusa Edizioni Musicali",
+      "count": 1
+    },
+    {
+      "name": "Conkarah under exclusive license to S-Curve Records",
+      "count": 1
+    },
+    {
+      "name": "Universal Studios and Atlantic Recording Corporation",
+      "count": 1
+    },
+    {
+      "name": "United Common Records",
+      "count": 1
+    },
+    {
+      "name": "KONTOR Records",
+      "count": 1
+    },
+    {
+      "name": "As Music",
+      "count": 1
+    },
+    {
+      "name": "RizaNova",
+      "count": 1
+    },
+    {
+      "name": "6997504 Records DK",
+      "count": 1
+    },
+    {
+      "name": "New Ahang",
+      "count": 1
+    },
+    {
+      "name": "Extensive Music AB distributed by Warner Music Sweden AB",
+      "count": 1
+    },
+    {
+      "name": "Maa Gayatri Studio",
+      "count": 1
+    },
+    {
+      "name": "Inder Maan",
+      "count": 1
+    },
+    {
+      "name": "Time S.p.A., under exclusive license to Universal Music GmbH",
+      "count": 1
+    },
+    {
+      "name": "Kushwaha Entertainment",
+      "count": 1
+    },
+    {
+      "name": "SILET OPEN UP",
+      "count": 1
+    },
+    {
+      "name": "OverKnight Entertainment",
+      "count": 1
+    },
+    {
+      "name": "Creator Records, under exclusive license to Universal Music Romania",
+      "count": 1
+    },
+    {
+      "name": "GANGSTER CITY",
+      "count": 1
+    },
+    {
+      "name": "El Trono de Mexico",
+      "count": 1
+    },
+    {
+      "name": "King Record Co.",
+      "count": 1
+    },
+    {
+      "name": "Portfolio Managing Events, Under Exclusive License from Portfolio Managing Events to Universal Music India Pvt.",
+      "count": 1
+    },
+    {
+      "name": "Bhola Music Bhojpuri",
+      "count": 1
+    },
+    {
+      "name": "Easykid",
+      "count": 1
+    },
+    {
+      "name": "Rec. 118 / Warner Music France, a Warner Music Group Company",
+      "count": 1
+    },
+    {
+      "name": "SME Korea",
+      "count": 1
+    },
+    {
+      "name": "Zawanbeats",
+      "count": 1
+    },
+    {
+      "name": "iamcosmic",
+      "count": 1
+    },
+    {
+      "name": "Natalie Taylor, under exclusive license to Columbia Records, a Division of Sony Music Entertainment",
+      "count": 1
+    },
+    {
+      "name": "北京音尚律动文化传媒有限公司",
+      "count": 1
+    },
+    {
+      "name": "Cavendish Music Library",
+      "count": 1
+    },
+    {
+      "name": "CVRTOON, under exclusive license to Amuseio AB",
+      "count": 1
+    },
+    {
+      "name": "Gold-Tiger",
+      "count": 1
+    },
+    {
+      "name": "Black Crow Records",
+      "count": 1
+    },
+    {
+      "name": "Major Tom's / Asylum Records, a division of Warner Music UK Limited",
+      "count": 1
+    },
+    {
+      "name": "Valentino Khan under exclusive licence to Ministry of Sound Recordings Limited",
+      "count": 1
+    },
+    {
+      "name": "Shrey Singhal",
+      "count": 1
+    },
+    {
+      "name": "Souvlaki Records",
+      "count": 1
+    },
+    {
+      "name": "JVLA by EMDC Network",
+      "count": 1
+    },
+    {
+      "name": "Independent",
+      "count": 1
+    },
+    {
+      "name": "Of Naked Design Recordings",
+      "count": 1
+    },
+    {
+      "name": "Desi Music Factory",
+      "count": 1
+    },
+    {
+      "name": "Sony Music Entertainment Sweden AB",
+      "count": 1
+    },
+    {
+      "name": "Juke Dock",
+      "count": 1
+    },
+    {
+      "name": "STMPD RCRDS B.V. exclusively licensed to Epic Amsterdam, a divison of Sony Music Entertainment Netherlands B.V",
+      "count": 1
+    },
+    {
+      "name": "Ru Frequence",
+      "count": 1
+    },
+    {
+      "name": "HoneyWorks",
+      "count": 1
+    },
+    {
+      "name": "Home Islamic",
+      "count": 1
+    },
+    {
+      "name": "Codiscos S.A.S",
+      "count": 1
+    },
+    {
+      "name": "creamy, martin arteta",
+      "count": 1
+    },
+    {
+      "name": "NO1R",
+      "count": 1
+    },
+    {
+      "name": "Elektra Records",
+      "count": 1
+    },
+    {
+      "name": "Viva Records Corporation",
+      "count": 1
+    },
+    {
+      "name": "WEA / Warner Music Group Germany Holding GmbH / A Warner Music Group Company",
+      "count": 1
+    },
+    {
+      "name": "Davido Music Worldwide Limited under exclusive licence to Sony Music Entertainment UK Limited",
+      "count": 1
+    },
+    {
+      "name": "Plopscotch Records",
+      "count": 1
+    },
+    {
+      "name": "CDLand music",
+      "count": 1
+    },
+    {
+      "name": "SMB MUSIC BHOJPURI",
+      "count": 1
+    },
+    {
+      "name": "Ecko Show",
+      "count": 1
+    },
+    {
+      "name": "Witt Lowry",
+      "count": 1
+    },
+    {
+      "name": "Max Music Limited",
+      "count": 1
+    },
+    {
+      "name": "MEYY under exclusive license to Unity Records",
+      "count": 1
+    },
+    {
+      "name": "Mavin Global Holdings Ltd / Jonzing World Entertainment",
+      "count": 1
+    },
+    {
+      "name": "Nynetineth",
+      "count": 1
+    },
+    {
+      "name": "Warner Records",
+      "count": 1
+    },
+    {
+      "name": "Smart Study Co.",
+      "count": 1
+    },
+    {
+      "name": "Boomed AS",
+      "count": 1
+    },
+    {
+      "name": "Miami Beats / under exclusive license to ATLAST MUSIC",
+      "count": 1
+    },
+    {
+      "name": "Popp Hunna under exclusive license to RUN",
+      "count": 1
+    },
+    {
+      "name": "VP Music Group",
+      "count": 1
+    },
+    {
+      "name": "Tommy Boy Records",
+      "count": 1
+    },
+    {
+      "name": "Tommee Profitt Studios",
+      "count": 1
+    },
+    {
+      "name": "фрози & joyful, under exclusive license to Kurate Music",
+      "count": 1
+    },
+    {
+      "name": "Enchan",
+      "count": 1
+    },
+    {
+      "name": "Chella Music / 222 Ent",
+      "count": 1
+    },
+    {
+      "name": "319 Music Group",
+      "count": 1
+    },
+    {
+      "name": "Bad Batch Records under exclusive license to Elektra Records for the World excluding Australia and New Zealand",
+      "count": 1
+    },
+    {
+      "name": "GR6 MUSIC",
+      "count": 1
+    },
+    {
+      "name": "Yanis Records",
+      "count": 1
+    },
+    {
+      "name": "Ebondo Sounds",
+      "count": 1
+    },
+    {
+      "name": "KRYPTO9095, under exclusive license to Arista Records, a division of Sony Music Entertainment",
+      "count": 1
+    },
+    {
+      "name": "Fantasy",
+      "count": 1
+    },
+    {
+      "name": "Warner Music South Africa (Pty)",
+      "count": 1
+    },
+    {
+      "name": "IAMSOUND Records released under exclusive license to Play It Again Sam",
+      "count": 1
+    },
+    {
+      "name": "MURATTI MUSIC",
+      "count": 1
+    },
+    {
+      "name": "Capitol Digital Records",
+      "count": 1
+    },
+    {
+      "name": "1501 Certified Ent. LLC under exclusive license to 300 Entertainment",
+      "count": 1
+    },
+    {
+      "name": "Aftermath Entertainment/Interscope Records",
+      "count": 1
+    },
+    {
+      "name": "Loud Behaviour",
+      "count": 1
+    },
+    {
+      "name": "Ex Battalion Music",
+      "count": 1
+    },
+    {
+      "name": "An EMI recording; ℗ 2023 Mae Stephens, under exclusive licence to Universal Music Operations Limited",
+      "count": 1
+    },
+    {
+      "name": "Geek Records",
+      "count": 1
+    },
+    {
+      "name": "Nettwerk Music Group",
+      "count": 1
+    },
+    {
+      "name": "The Island Def Jam Music Group and Mariah Carey",
+      "count": 1
+    },
+    {
+      "name": "Roc Nation Records",
+      "count": 1
+    },
+    {
+      "name": "distributed by Warner Music Latina Inc. and Warner Records Inc., ℗ 2023 One World International",
+      "count": 1
+    },
+    {
+      "name": "We The Best x Influence. Exclusively distributed by Epic Records, a division of Sony Music Entertainment",
+      "count": 1
+    },
+    {
+      "name": "The Other Songs Records, a division of The Other Songs",
+      "count": 1
+    },
+    {
+      "name": "3478007 Records DK",
+      "count": 1
+    },
+    {
+      "name": "Viva Records",
+      "count": 1
+    },
+    {
+      "name": "RC Music",
+      "count": 1
+    },
+    {
+      "name": "Sherine Abd El-wahab",
+      "count": 1
+    },
+    {
+      "name": "Rousseau",
+      "count": 1
+    },
+    {
+      "name": "gamma",
+      "count": 1
+    },
+    {
+      "name": "Amorf",
+      "count": 1
+    },
+    {
+      "name": "Domino Recording Co",
+      "count": 1
+    },
+    {
+      "name": "YOASOBI",
+      "count": 1
+    },
+    {
+      "name": "Yagih Mael",
+      "count": 1
+    },
+    {
+      "name": "Twisted Elegance",
+      "count": 1
+    },
+    {
+      "name": "Polydor Ltd. (UK)",
+      "count": 1
+    },
+    {
+      "name": "King Raja",
+      "count": 1
+    },
+    {
+      "name": "BCR",
+      "count": 1
+    },
+    {
+      "name": "YRF Music",
+      "count": 1
+    },
+    {
+      "name": "PARASIEMPRE.wav RECORDS",
+      "count": 1
+    },
+    {
+      "name": "Universal Republic Records, a division of UMG Recordings, Inc. & Lava Music",
+      "count": 1
+    },
+    {
+      "name": "ISO Supremacy, Under exclusive license to PULSE Records., Distributed by Concord",
+      "count": 1
+    },
+    {
+      "name": "4967994 Records DK",
+      "count": 1
+    },
+    {
+      "name": "thuy, Distributed by Venice Music",
+      "count": 1
+    },
+    {
+      "name": "Geo Entertainment",
+      "count": 1
+    },
+    {
+      "name": "Johnny Orlando and M, M&M, Inc, under exclusive license to Universal Music Canada",
+      "count": 1
+    },
+    {
+      "name": "Heera Media",
+      "count": 1
+    },
+    {
+      "name": "RCA/JIVE Label Group, a unit of Sony Music Entertainment",
+      "count": 1
+    },
+    {
+      "name": "Tollan Kim",
+      "count": 1
+    },
+    {
+      "name": "YG Entertainment, distributed through Interscope Records",
+      "count": 1
+    },
+    {
+      "name": "Friday Mood",
+      "count": 1
+    },
+    {
+      "name": "Øneheart & reidenshi, under exclusive license to dreamscape, a division of Kurate Music",
+      "count": 1
+    },
+    {
+      "name": "Desi Melodies",
+      "count": 1
+    },
+    {
+      "name": "Sony Music Entertainment Italy Spa",
+      "count": 1
+    },
+    {
+      "name": "Trinity Optima Production",
+      "count": 1
+    },
+    {
+      "name": "Universal Music GmbH",
+      "count": 1
+    },
+    {
+      "name": "Vim Music",
+      "count": 1
+    },
+    {
+      "name": "Turan Media",
+      "count": 1
+    },
+    {
+      "name": "Singled Out Music",
+      "count": 1
+    },
+    {
+      "name": "9490683 Records DK",
+      "count": 1
+    },
+    {
+      "name": "BCD Studio",
+      "count": 1
+    },
+    {
+      "name": "Ram Kabir Raja Official",
+      "count": 1
+    },
+    {
+      "name": "Universal Records, a Division of UMG Recordings",
+      "count": 1
+    },
+    {
+      "name": "Reynold Sena Boakye",
+      "count": 1
+    },
+    {
+      "name": "Cocktail Music",
+      "count": 1
+    },
+    {
+      "name": "broke",
+      "count": 1
+    },
+    {
+      "name": "Scorpio Music",
+      "count": 1
+    },
+    {
+      "name": "Columbia Records, a Division of Sony Music Entertainment, as exclusive licensee",
+      "count": 1
+    },
+    {
+      "name": "TM Music",
+      "count": 1
+    },
+    {
+      "name": "BMG Rights Management (US)",
+      "count": 1
+    },
+    {
+      "name": "Sangeeta",
+      "count": 1
+    },
+    {
+      "name": "Label Catastrophic",
+      "count": 1
+    },
+    {
+      "name": "DJ MOIGUS, under exclusive license to FUNK RECORDS, a division of Kurate Music",
+      "count": 1
+    },
+    {
+      "name": "Surfaces, LLC / TenThousand Projects",
+      "count": 1
+    },
+    {
+      "name": "Voge Records",
+      "count": 1
+    },
+    {
+      "name": "Acqustic",
+      "count": 1
+    },
+    {
+      "name": "Kemosabe Records",
+      "count": 1
+    },
+    {
+      "name": "Bonde R300",
+      "count": 1
+    },
+    {
+      "name": "Smiley Miley, Inc. under exclusive license to Columbia Records, a Division of Sony Music Entertainment",
+      "count": 1
+    },
+    {
+      "name": "YEAR0001",
+      "count": 1
+    },
+    {
+      "name": "RCA Records, a unit of Sony Music Entertainment",
+      "count": 1
+    },
+    {
+      "name": "Ace Entertainment S.ar.l. under exclusive license to Sony Music Entertainment US Latin",
+      "count": 1
+    },
+    {
+      "name": "Universal Music AB",
+      "count": 1
+    },
+    {
+      "name": "Y2K Music, Inc., BBNO Music Inc. and Get Together records, a division of Good Company Records Ltd. all under exclusive license to Columbia Records, a Division of Sony Music Entertainment",
+      "count": 1
+    },
+    {
+      "name": "Alfatih Record",
+      "count": 1
+    },
+    {
+      "name": "Elektra/Atlantic Records for the United States and WEA International Inc. for the world excluding the United States and Iceland",
+      "count": 1
+    },
+    {
+      "name": "Super Cassettes Industries Limited",
+      "count": 1
+    },
+    {
+      "name": "Thirty Knots under exclusive license to Columbia Records",
+      "count": 1
+    },
+    {
+      "name": "Djo Music under exclusive license to AWAL Recordings",
+      "count": 1
+    },
+    {
+      "name": "Fully Furnished Records",
+      "count": 1
+    },
+    {
+      "name": "KIDinaKORNER/Interscope Records",
+      "count": 1
+    },
+    {
+      "name": "Night Street Records/Warner Records, ℗ 2024 Warner Records",
+      "count": 1
+    },
+    {
+      "name": "Simco Ltd. under exclusive license to Epic Records, a division of Sony Music Entertainment",
+      "count": 1
+    },
+    {
+      "name": "Hollywood Records",
+      "count": 1
+    },
+    {
+      "name": "ZUID BOYZ",
+      "count": 1
+    },
+    {
+      "name": "Netrilis Music",
+      "count": 1
+    },
+    {
+      "name": "DUBTRXX",
+      "count": 1
+    },
+    {
+      "name": "Universal Music (Denmark) A/S",
+      "count": 1
+    },
+    {
+      "name": "Fueled By Ramen LLC, for the United States and WEA International Inc. for the world outside of the United States",
+      "count": 1
+    },
+    {
+      "name": "Effective Records",
+      "count": 1
+    },
+    {
+      "name": "Lux-Inspira Music",
+      "count": 1
+    },
+    {
+      "name": "Virgin EMI Records, a division of Universal Music Operations Limited",
+      "count": 1
+    },
+    {
+      "name": "wowplusmusic",
+      "count": 1
+    },
+    {
+      "name": "BB Media",
+      "count": 1
+    },
+    {
+      "name": "EAST MEDIA GROUPS",
+      "count": 1
+    },
+    {
+      "name": "Hitboy Entertainment",
+      "count": 1
+    },
+    {
+      "name": "Reprise Records",
+      "count": 1
+    },
+    {
+      "name": "Universal Island Records Ltd. A Universal Music Company",
+      "count": 1
+    },
+    {
+      "name": "Walnut Studios",
+      "count": 1
+    },
+    {
+      "name": "Warp Records",
+      "count": 1
+    },
+    {
+      "name": "The Smeezingtons under exclusive license to Atlantic Records",
+      "count": 1
+    },
+    {
+      "name": "G.K. Panayiotou, under exclusive license to Sony Music Entertainment UK Limited",
+      "count": 1
+    },
+    {
+      "name": "Soul Revival Studios",
+      "count": 1
+    },
+    {
+      "name": "Aditya Music (India)",
+      "count": 1
+    },
+    {
+      "name": "Dharma / under exclusive license to SpinninRecords.com",
+      "count": 1
+    },
+    {
+      "name": "Columbia Records, a division of Sony Music Entertainment",
+      "count": 1
+    },
+    {
+      "name": "Vitamin A",
+      "count": 1
+    },
+    {
+      "name": "Jincheng Zhang",
+      "count": 1
+    },
+    {
+      "name": "Music Dude",
+      "count": 1
+    },
+    {
+      "name": "The Weeknd XO, Inc., Manufactured and Marketed by Republic Records, a Division of UMG Recordings",
+      "count": 1
+    },
+    {
+      "name": "Maher Zain",
+      "count": 1
+    },
+    {
+      "name": "Secret City Records",
+      "count": 1
+    },
+    {
+      "name": "Earmotion Audio Creation",
+      "count": 1
+    },
+    {
+      "name": "Max-Music",
+      "count": 1
+    },
+    {
+      "name": "Ludovico Einaudi",
+      "count": 1
+    },
+    {
+      "name": "Ispr",
+      "count": 1
+    },
+    {
+      "name": "Takwene",
+      "count": 1
+    },
+    {
+      "name": "Vested in Culture, a division of Epic Records/Sony Music Entertainment",
+      "count": 1
+    },
+    {
+      "name": "Dark Night Media",
+      "count": 1
+    },
+    {
+      "name": "DJ Snake Music, under exclusive license to Interscope Records",
+      "count": 1
+    },
+    {
+      "name": "Republic Records, a division of UMG Recordings, Inc. & Victor Victor Worldwide",
+      "count": 1
+    },
+    {
+      "name": "Tenxi, Naykilla, Jemsii",
+      "count": 1
+    },
+    {
+      "name": "Happy Birthday - Happy Birthday Song - Happy Birthday To You",
+      "count": 1
+    },
+    {
+      "name": "Flow La Movie",
+      "count": 1
+    },
+    {
+      "name": "Nvak Collective",
+      "count": 1
+    },
+    {
+      "name": "King Digital",
+      "count": 1
+    },
+    {
+      "name": "Mavin Global Holdings",
+      "count": 1
+    },
+    {
+      "name": "Voila Digi Private Limited",
+      "count": 1
+    },
+    {
+      "name": "Arista Records",
+      "count": 1
+    },
+    {
+      "name": "Fe Y Obra Music exclusively licensed to Adarga Entertainment Group",
+      "count": 1
+    },
+    {
+      "name": "PlayDMF",
+      "count": 1
+    },
+    {
+      "name": "Please Rewind / Atlantic Recording Corporation for the United States and WEA International Inc. for the world outside of the United States. A Warner Music Group Company",
+      "count": 1
+    },
+    {
+      "name": "Tribal Trap",
+      "count": 1
+    },
+    {
+      "name": "Kamlee Records Limited",
+      "count": 1
+    },
+    {
+      "name": "Reprise Records for the U.S. and WEA International Inc. for the world outside the U.S",
+      "count": 1
+    },
+    {
+      "name": "Furkan Soysal",
+      "count": 1
+    },
+    {
+      "name": "Asylum Records UK, a division of Atlantic Records UK. A Warner Music Group Company",
+      "count": 1
+    },
+    {
+      "name": "Ragoza Music",
+      "count": 1
+    },
+    {
+      "name": "furkansoysal",
+      "count": 1
+    },
+    {
+      "name": "NEXXWAVE MUSIC",
+      "count": 1
+    },
+    {
+      "name": "Stephen Sanchez, under exclusive license to Mercury Records, a division of UMG Recordings",
+      "count": 1
+    },
+    {
+      "name": "Sony Music Entertainment Norway AS",
+      "count": 1
+    },
+    {
+      "name": "Elilluminari Records",
+      "count": 1
+    },
+    {
+      "name": "Sony Music Entertainment US Latin LLC under exclusive license from La Industria",
+      "count": 1
+    },
+    {
+      "name": "Vicky Singh",
+      "count": 1
+    },
+    {
+      "name": "300 Entertainment / Atlantic Recording Corporation",
+      "count": 1
+    },
+    {
+      "name": "EZ",
+      "count": 1
+    },
+    {
+      "name": "kodylayt",
+      "count": 1
+    },
+    {
+      "name": "IK Records",
+      "count": 1
+    },
+    {
+      "name": "G-EAZY",
+      "count": 1
+    },
+    {
+      "name": "Yash Raj Films Pvt.",
+      "count": 1
+    },
+    {
+      "name": "Cat Music",
+      "count": 1
+    },
+    {
+      "name": "Dolo Entertainment",
+      "count": 1
+    },
+    {
+      "name": "VP Records, a division of VP Music Group",
+      "count": 1
+    },
+    {
+      "name": "Epic Records, a division of Sony Music Entertainment with A1 / Freebandz",
+      "count": 1
+    },
+    {
+      "name": "Dua Lipa Limited under exclusive license to Warner Records UK, a division of Warner Music UK Limited",
+      "count": 1
+    },
+    {
+      "name": "JRZ Record",
+      "count": 1
+    },
+    {
+      "name": "Getting Out Our Dreams, Inc./Def Jam Recordings, a division of UMG Recordings",
+      "count": 1
+    },
+    {
+      "name": "B1 Recordings, a Sony Music Entertainment company / Ultra Records",
+      "count": 1
+    },
+    {
+      "name": "NCS, with additional marketing and promotion provided by Warner Records",
+      "count": 1
+    },
+    {
+      "name": "Sony Music Entertainment Brasil ltda",
+      "count": 1
+    },
+    {
+      "name": "Mosaert Label",
+      "count": 1
+    },
+    {
+      "name": "Black 17 Media",
+      "count": 1
+    },
+    {
+      "name": "Cactus Jack Records, LLC under exclusive license to Epic Records, a division of Sony Music Entertainment",
+      "count": 1
+    },
+    {
+      "name": "713077 Records DK",
+      "count": 1
+    },
+    {
+      "name": "Naughty Boy Recordings Limited, under exclusive licence to Virgin Records",
+      "count": 1
+    },
+    {
+      "name": "Atlantic Records Group",
+      "count": 1
+    },
+    {
+      "name": "KONVICT KULTURE",
+      "count": 1
+    },
+    {
+      "name": "Craft Latino., Distributed by Concord",
+      "count": 1
+    },
+    {
+      "name": "Island Def Jam",
+      "count": 1
+    },
+    {
+      "name": "Tips Industries Ltd. Under Exclusive License to ADA/Warner Music",
+      "count": 1
+    },
+    {
+      "name": "Roshan",
+      "count": 1
+    },
+    {
+      "name": "Tips Music Limited Under Exclusive License to Warner Music",
+      "count": 1
+    },
+    {
+      "name": "Heera Gold",
+      "count": 1
+    },
+    {
+      "name": "Houstra Records,Rich Knöchel",
+      "count": 1
+    },
+    {
+      "name": "Outlaw Productions",
+      "count": 1
+    },
+    {
+      "name": "DANI GALERA",
+      "count": 1
+    },
+    {
+      "name": "Oskar Amezaga Asensio",
+      "count": 1
+    },
+    {
+      "name": "Promised Land Recordings Limited",
+      "count": 1
+    },
+    {
+      "name": "Kreatell Music under exclusive license to Sony Music Entertainment Sweden AB",
+      "count": 1
+    },
+    {
+      "name": "MüzikAz Yapım",
+      "count": 1
+    },
+    {
+      "name": "Parlophone Records Ltd, a Warner Music Group Company",
+      "count": 1
+    },
+    {
+      "name": "TJ Records",
+      "count": 1
+    },
+    {
+      "name": "Hamo Bika",
+      "count": 1
+    },
+    {
+      "name": "T-Series",
+      "count": 1
+    },
+    {
+      "name": "Republic Records, a division of UMG Recordings",
+      "count": 1
+    },
+    {
+      "name": "Amaterasu Prod / Good Mood Publishing / H24",
+      "count": 1
+    },
+    {
+      "name": "Gully Gang Records",
+      "count": 1
+    },
+    {
+      "name": "Dead Oceans",
+      "count": 1
+    },
+    {
+      "name": "SAStudios",
+      "count": 1
+    },
+    {
+      "name": "yo suzuki",
+      "count": 1
+    },
+    {
+      "name": "Saga Music",
+      "count": 1
+    },
+    {
+      "name": "Evolution Media",
+      "count": 1
+    },
+    {
+      "name": "NCS",
+      "count": 1
+    },
+    {
+      "name": "SoundOn MENA",
+      "count": 1
+    },
+    {
+      "name": "Artist Partner Group",
+      "count": 1
+    },
+    {
+      "name": "Premium Latin Music",
+      "count": 1
+    },
+    {
+      "name": "Amar Audio",
+      "count": 1
+    },
+    {
+      "name": "Acuna Boyz Productions",
+      "count": 1
+    },
+    {
+      "name": "Ultra Records",
+      "count": 1
+    },
+    {
+      "name": "Chocolate City under exclusive licence to Warner Music South Africa (Pty)",
+      "count": 1
+    },
+    {
+      "name": "Humble Music",
+      "count": 1
+    },
+    {
+      "name": "Subaşı Yapım",
+      "count": 1
+    },
+    {
+      "name": "Novenove",
+      "count": 1
+    },
+    {
+      "name": "void / The Spectrum",
+      "count": 1
+    },
+    {
+      "name": "Humood AlKhudher",
+      "count": 1
+    },
+    {
+      "name": "ARTIS JEFE",
+      "count": 1
+    },
+    {
+      "name": "Junkyard Music Productions/Y.G.F Records",
+      "count": 1
+    },
+    {
+      "name": "Adam Daniel, under exclusive license to Republic Records, a division of UMG Recordings",
+      "count": 1
+    },
+    {
+      "name": "Magin Diaz",
+      "count": 1
+    },
+    {
+      "name": "Universal International Music B.V., under exclusive license to Universal Island Records",
+      "count": 1
+    },
+    {
+      "name": "void",
+      "count": 1
+    },
+    {
+      "name": "Hyper Focal, under exclusive license to RCA, a division of Sony Music Entertainment France SAS",
+      "count": 1
+    },
+    {
+      "name": "Aftermath Records",
+      "count": 1
+    },
+    {
+      "name": "TMK Group Publishing",
+      "count": 1
+    },
+    {
+      "name": "The Island Def Jam Music Group",
+      "count": 1
+    },
+    {
+      "name": "Burfi Music",
+      "count": 1
+    },
+    {
+      "name": "Ishtar Punjabi",
+      "count": 1
+    },
+    {
+      "name": "Unjaps AB",
+      "count": 1
+    },
+    {
+      "name": "Sony Music Entertainment Canada",
+      "count": 1
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+Subject: Request to Activate External API Access for App ID: emil_elmTTqJc
+
+Hi Levi,
+
+I'm reaching out to request activation of external API access for my Chartex account. I'm building a TikTok trending discovery tool for A&R (Artists & Repertoire) work and would like to integrate Chartex's TikTok data via the programmatic API.
+
+**My API Credentials:**
+- App ID: emil_elmTTqJc
+- Current Status: Free tier (50 requests used via web interface)
+- Requested Endpoints: /external/v1/songs/ and /external/v1/tiktok-sounds/
+
+**Current Issue:**
+When I make requests to the external API endpoints with my credentials (X-APP-ID and X-APP-TOKEN headers), I'm receiving 404 responses. The "Try it out" feature on the API documentation page works perfectly when I'm logged in, but programmatic API calls from my application are not working.
+
+**Use Case:**
+I'm developing an internal A&R discovery tool that will:
+- Fetch trending TikTok songs with historical data
+- Analyze viral growth patterns
+- Help identify breakthrough artists early
+- This is for private/internal use, not a public or monetized platform
+
+**Request:**
+Could you please activate external API access for my account? According to the documentation, API limit upgrades are available free of charge. I'd greatly appreciate access to the `/external/v1/songs/` endpoint to integrate TikTok trending data into my discovery workflow.
+
+Thank you for your time and assistance! Looking forward to putting Chartex's excellent data to work.
+
+Best regards,
+[Your Name]
+[Optional: Your Company/Organization]
