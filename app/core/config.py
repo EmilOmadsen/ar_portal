@@ -28,8 +28,8 @@ class Settings(BaseSettings):
     SPOTIFY_CLIENT_SECRET: str = ""
     
     # Chartex API Configuration (Historical Streaming Data)
-    CHARTEX_APP_ID: str = "emil_elmTTqJc"
-    CHARTEX_APP_TOKEN: str = "4lgvbHQ5cYN-F6O2yQLLw4N4LI3MxjLXtNoNhvqWyyY"
+    CHARTEX_APP_ID: str = ""
+    CHARTEX_APP_TOKEN: str = ""
     CHARTEX_BASE_URL: str = "https://api.chartex.com"
     
     class Config:
