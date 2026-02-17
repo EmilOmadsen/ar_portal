@@ -16,6 +16,7 @@ lxml
 docxtpl
 python-docx
 pdf2image
+num2words
 pydantic[email]
 pydantic-settings>=2.0.0
 pytest
