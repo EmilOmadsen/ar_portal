@@ -70,6 +70,18 @@ scheduler.add_job(
 @app.on_event("startup")
 def startup_event():
     """Start the scheduler on app startup"""
+    # Initialize database tables
+    try:
+        from app.db.base import Base
+        from app.db.session import engine
+        from app.models.user import User
+        from app.models.discovery import Track, TrackMetric, TrackScore, Shortlist, DiscoveryRun, PinnedSong
+        
+        Base.metadata.create_all(bind=engine)
+        logger.info("✅ Database tables initialized successfully")
+    except Exception as e:
+        logger.error(f"❌ Database initialization failed: {str(e)}")
+    
     # Clear cache on startup to ensure fresh data
     try:
         from app.api.discovery import tiktok_trending
