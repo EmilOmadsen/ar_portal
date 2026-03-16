@@ -1,6 +1,19 @@
 from app.core.contracts.number_words import number_to_words
 
 
+# Currency code to full name mapping
+CURRENCY_NAMES = {
+    "USD": "US Dollars",
+    "EUR": "Euros",
+    "BRL": "Brazilian Reals"
+}
+
+
+def get_currency_name(currency_code: str) -> str:
+    """Get the full currency name from currency code."""
+    return CURRENCY_NAMES.get(currency_code, currency_code)
+
+
 def format_amount_with_commas(amount: int) -> str:
     """Format a number with thousand separators (commas)."""
     return f"{amount:,}"
@@ -10,7 +23,7 @@ def build_marketing_fields(payload: dict) -> dict:
     """
     Build marketing recoupment fields (numeric + words).
     Backend ONLY provides data - Word handles text generation.
-    Now includes currency support (USD/EUR).
+    Now includes currency support (USD/EUR/BRL) with currency names.
     """
     marketing_enabled = payload.get("marketing_recoupment_enabled", False)
     
@@ -18,11 +31,13 @@ def build_marketing_fields(payload: dict) -> dict:
         return {
             "marketing_recoupment_enabled": False,
             "marketing_recoupment_currency": "USD",
+            "marketing_recoupment_currency_name": "US Dollars",
             "marketing_recoupment_amount_numeric": 0,
             "marketing_recoupment_amount_formatted": "0",
             "marketing_recoupment_amount_words": "",
             "marketing_option_enabled": False,
             "marketing_option_currency": "USD",
+            "marketing_option_currency_name": "US Dollars",
             "marketing_option_amount_numeric": 0,
             "marketing_option_amount_formatted": "0",
             "marketing_option_amount_words": ""
@@ -37,11 +52,13 @@ def build_marketing_fields(payload: dict) -> dict:
     result = {
         "marketing_recoupment_enabled": True,
         "marketing_recoupment_currency": marketing_currency,
+        "marketing_recoupment_currency_name": get_currency_name(marketing_currency),
         "marketing_recoupment_amount_numeric": marketing_amount,
         "marketing_recoupment_amount_formatted": format_amount_with_commas(marketing_amount),
         "marketing_recoupment_amount_words": number_to_words(marketing_amount).title(),
         "marketing_option_enabled": marketing_option,
-        "marketing_option_currency": marketing_option_currency
+        "marketing_option_currency": marketing_option_currency,
+        "marketing_option_currency_name": get_currency_name(marketing_option_currency)
     }
     
     if marketing_option:
@@ -59,7 +76,7 @@ def build_marketing_fields(payload: dict) -> dict:
 def build_advance(payload: dict) -> dict:
     """
     Build standard advance fields (numeric + words).
-    Now includes currency support (USD/EUR).
+    Now includes currency support (USD/EUR/BRL) with currency names.
     """
     advance_enabled = payload.get("advance_enabled", False)
     
@@ -67,6 +84,7 @@ def build_advance(payload: dict) -> dict:
         return {
             "advance_enabled": False,
             "advance_currency": "USD",
+            "advance_currency_name": "US Dollars",
             "advance_amount_numeric": 0,
             "advance_amount_formatted": "0",
             "advance_amount_words": ""
@@ -78,6 +96,7 @@ def build_advance(payload: dict) -> dict:
     return {
         "advance_enabled": True,
         "advance_currency": advance_currency,
+        "advance_currency_name": get_currency_name(advance_currency),
         "advance_amount_numeric": advance_amount,
         "advance_amount_formatted": format_amount_with_commas(advance_amount),
         "advance_amount_words": number_to_words(advance_amount).title()
