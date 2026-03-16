@@ -486,9 +486,18 @@
                     <label for="marketing_recoupment_enabled">Enable marketing cost recoupment</label>
                 </div>
 
-                <div class="input-group" id="marketing_recoupment_group" style="display:none;">
-                    <label>Marketing Recoupment Amount</label>
-                    <input type="number" id="marketing_recoupment_amount" value="5000" min="0">
+                <div id="marketing_recoupment_group" style="display:none;">
+                    <div class="input-group">
+                        <label>Marketing Recoupment Currency</label>
+                        <select id="marketing_recoupment_currency">
+                            <option value="USD" selected>USD</option>
+                            <option value="EUR">EUR</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Marketing Recoupment Amount</label>
+                        <input type="number" id="marketing_recoupment_amount" value="5000" min="0">
+                    </div>
                 </div>
 
                 <div class="checkbox-group">
@@ -496,9 +505,18 @@
                     <label for="marketing_option_enabled">Include marketing option clause</label>
                 </div>
 
-                <div class="input-group" id="marketing_option_group" style="display:none;">
-                    <label>Marketing Option Amount</label>
-                    <input type="number" id="marketing_option_amount" value="5000" min="0">
+                <div id="marketing_option_group" style="display:none;">
+                    <div class="input-group">
+                        <label>Marketing Option Currency</label>
+                        <select id="marketing_option_currency">
+                            <option value="USD" selected>USD</option>
+                            <option value="EUR">EUR</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Marketing Option Amount</label>
+                        <input type="number" id="marketing_option_amount" value="5000" min="0">
+                    </div>
                 </div>
 
                 <div class="checkbox-group">
@@ -506,9 +524,18 @@
                     <label for="advance_enabled">Include advance payment</label>
                 </div>
 
-                <div class="input-group" id="advance_group" style="display:none;">
-                    <label>Advance Amount (DKK)</label>
-                    <input type="number" id="advance_amount" value="10000" min="0">
+                <div id="advance_group" style="display:none;">
+                    <div class="input-group">
+                        <label>Advance Currency</label>
+                        <select id="advance_currency">
+                            <option value="USD" selected>USD</option>
+                            <option value="EUR">EUR</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Advance Amount</label>
+                        <input type="number" id="advance_amount" value="10000" min="0">
+                    </div>
                 </div>
 
                 <div class="checkbox-group">
@@ -566,10 +593,13 @@
             recordings: [],
             royalty_percent: 50,
             marketing_recoupment_enabled: false,
+            marketing_recoupment_currency: "USD",
             marketing_recoupment_amount: 0,
             marketing_option_enabled: false,
+            marketing_option_currency: "USD",
             marketing_option_amount: 0,
             advance_enabled: false,
+            advance_currency: "USD",
             advance_amount: 0,
             milestone_enabled: false,
             milestone_daily_streams: 0,
@@ -732,12 +762,18 @@
             if (currentStep === 6) {
                 contractData.royalty_percent = parseFloat(document.getElementById('royalty_percent').value);
                 contractData.marketing_recoupment_enabled = document.getElementById('marketing_recoupment_enabled').checked;
+                contractData.marketing_recoupment_currency = contractData.marketing_recoupment_enabled ?
+                    document.getElementById('marketing_recoupment_currency').value : "USD";
                 contractData.marketing_recoupment_amount = contractData.marketing_recoupment_enabled ? 
                     parseFloat(document.getElementById('marketing_recoupment_amount').value) : 0;
                 contractData.marketing_option_enabled = document.getElementById('marketing_option_enabled').checked;
+                contractData.marketing_option_currency = contractData.marketing_option_enabled ?
+                    document.getElementById('marketing_option_currency').value : "USD";
                 contractData.marketing_option_amount = contractData.marketing_option_enabled ? 
                     parseFloat(document.getElementById('marketing_option_amount').value) : 0;
                 contractData.advance_enabled = document.getElementById('advance_enabled').checked;
+                contractData.advance_currency = contractData.advance_enabled ?
+                    document.getElementById('advance_currency').value : "USD";
                 contractData.advance_amount = contractData.advance_enabled ? 
                     parseFloat(document.getElementById('advance_amount').value) : 0;
                 contractData.milestone_enabled = document.getElementById('milestone_enabled').checked;
@@ -886,22 +922,22 @@
             financialHtml += `<p><strong>Royalty Rate:</strong> <span style="background: #fff9c4; padding: 2px 4px;">${contractData.royalty_percent}%</span></p>`;
             
             if (contractData.marketing_recoupment_enabled) {
-                financialHtml += `<p><strong>Marketing Recoupment:</strong> <span style="background: #fff9c4; padding: 2px 4px;">DKK ${contractData.marketing_recoupment_amount}</span></p>`;
+                financialHtml += `<p><strong>Marketing Recoupment:</strong> <span style="background: #fff9c4; padding: 2px 4px;">${contractData.marketing_recoupment_currency} ${formatNumber(contractData.marketing_recoupment_amount)}</span></p>`;
             }
             
             if (contractData.marketing_option_enabled) {
-                financialHtml += `<p><strong>Marketing Option:</strong> <span style="background: #fff9c4; padding: 2px 4px;">DKK ${contractData.marketing_option_amount}</span></p>`;
+                financialHtml += `<p><strong>Marketing Option:</strong> <span style="background: #fff9c4; padding: 2px 4px;">${contractData.marketing_option_currency} ${formatNumber(contractData.marketing_option_amount)}</span></p>`;
             }
             
             if (contractData.advance_enabled) {
-                financialHtml += `<p><strong>Advance:</strong> <span style="background: #fff9c4; padding: 2px 4px;">DKK ${contractData.advance_amount}</span></p>`;
+                financialHtml += `<p><strong>Advance:</strong> <span style="background: #fff9c4; padding: 2px 4px;">${contractData.advance_currency} ${formatNumber(contractData.advance_amount)}</span></p>`;
             }
 
             if (contractData.milestone_enabled) {
                 financialHtml += `
-                    <p><strong>Milestone Daily Streams:</strong> <span style="background: #fff9c4; padding: 2px 4px;">${contractData.milestone_daily_streams}</span></p>
+                    <p><strong>Milestone Daily Streams:</strong> <span style="background: #fff9c4; padding: 2px 4px;">${formatNumber(contractData.milestone_daily_streams)}</span></p>
                     <p><strong>Milestone Period:</strong> <span style="background: #fff9c4; padding: 2px 4px;">${contractData.milestone_period_days} days</span></p>
-                    <p><strong>Milestone Advance:</strong> <span style="background: #fff9c4; padding: 2px 4px;">DKK ${contractData.milestone_advance_amount}</span></p>
+                    <p><strong>Milestone Advance:</strong> <span style="background: #fff9c4; padding: 2px 4px;">${contractData.advance_currency} ${formatNumber(contractData.milestone_advance_amount)}</span></p>
                 `;
             }
 
@@ -959,6 +995,11 @@
                 console.error('Error generating contract:', error);
                 alert('Error generating contract: ' + error.message);
             }
+        }
+
+        function formatNumber(num) {
+            // Format number with thousand separators (comma)
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
 
         function downloadFile(blob, filename) {

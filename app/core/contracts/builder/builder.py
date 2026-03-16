@@ -66,9 +66,10 @@ def build_context(payload: dict):
         song_titles = '"TBC"'
 
     # ═══════════════════════════════════════════════════════
-    # 4. CONTRACT DATE (auto-filled with current date)
+    # 4. CONTRACT DATE
+    # Leave empty - DocuSign will fill in the date automatically
     # ═══════════════════════════════════════════════════════
-    contract_date = datetime.now().strftime("%B %d, %Y")  # e.g., "January 19, 2026"
+    contract_date = ""  # Empty - DocuSign handles date auto-fill
     
     return {
         # ─────────────────────────────
